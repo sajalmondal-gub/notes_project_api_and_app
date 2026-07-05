@@ -4,55 +4,138 @@ class ValidatorEngine {
 
     for (const field in rules) {
       const fieldRules = rules[field].split("|");
+
+      const rawValue = data[field];
       const value =
-        data[field] !== undefined ? String(data[field]).trim() : undefined;
+        rawValue !== undefined && rawValue !== null
+          ? String(rawValue).trim()
+          : undefined;
 
       for (const rule of fieldRules) {
-        if (rule === "required") {
-          if (!value || value === "") {
-            errors.push(
-              `${field.charAt(0).toUpperCase() + field.slice(1)} is required`,
-            );
-            break;
+        const [ruleName, ruleValue] = rule.split(":");
+
+        switch (ruleName) {
+          case "required":
+            if (value === undefined || value === null || value === "") {
+              errors.push({
+                field,
+                message: `${this.label(field)} is required`,
+              });
+              break;
+            }
+            continue;
+
+          case "min":
+            if (value !== undefined && value.length < Number(ruleValue)) {
+              errors.push({
+                field,
+                message: `${this.label(field)} must be at least ${ruleValue} characters long`,
+              });
+              break;
+            }
+            continue;
+
+          case "max":
+            if (value !== undefined && value.length > Number(ruleValue)) {
+              errors.push({
+                field,
+                message: `${this.label(field)} cannot exceed ${ruleValue} characters`,
+              });
+              break;
+            }
+            continue;
+
+          case "email":
+            if (
+              value !== undefined &&
+              !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)
+            ) {
+              errors.push({
+                field,
+                message: `${this.label(field)} must be a valid email address`,
+              });
+              break;
+            }
+            continue;
+
+          case "numeric":
+            if (value !== undefined && !/^\d+$/.test(value)) {
+              errors.push({
+                field,
+                message: `${this.label(field)} must be numeric`,
+              });
+              break;
+            }
+            continue;
+
+          case "boolean":
+            if (
+              value !== undefined &&
+              !["true", "false", "1", "0"].includes(value)
+            ) {
+              errors.push({
+                field,
+                message: `${this.label(field)} must be a boolean value`,
+              });
+              break;
+            }
+            continue;
+
+          case "confirmed": {
+            const confirmValue =
+              data[`confirm_${field}`] ?? data[`${field}_confirmation`];
+
+            if (value !== undefined && value !== confirmValue) {
+              errors.push({
+                field,
+                message: `${this.label(field)} confirmation does not match`,
+              });
+              break;
+            }
+            continue;
           }
+
+          case "integer":
+            if (value !== undefined && !/^-?\d+$/.test(value)) {
+              errors.push({
+                field,
+                message: `${this.label(field)} must be an integer`,
+              });
+              break;
+            }
+            continue;
         }
-        if (value) {
-          if (rule.startsWith("min:")) {
-            const minLength = parseInt(rule.split(":")[1], 10);
-            if (value.length < minLength) {
-              errors.push(
-                `${field.charAt(0).toUpperCase() + field.slice(1)} must be at least ${minLength} characters long`,
-              );
-            }
-          }
-          if (rule.startsWith("max:")) {
-            const maxLength = parseInt(rule.split(":")[1], 10);
-            if (value.length > maxLength) {
-              errors.push(
-                `${field.charAt(0).toUpperCase() + field.slice(1)} cannot exceed ${maxLength} characters`,
-              );
-            }
-          }
+
+        if (errors.some((error) => error.field === field)) {
+          break;
         }
       }
     }
 
     return {
       isValid: errors.length === 0,
-      errors: errors,
-      data: ValidatorEngine.sanitize(data, rules),
+      errors,
+      data: this.sanitize(data, rules),
     };
   }
 
   static sanitize(data, rules) {
-    const sanitizedData = {};
+    const sanitized = {};
+
     for (const field in rules) {
       if (data[field] !== undefined) {
-        sanitizedData[field] =
+        sanitized[field] =
           typeof data[field] === "string" ? data[field].trim() : data[field];
       }
     }
-    return sanitizedData;
+
+    return sanitized;
+  }
+
+  static label(field) {
+    return field
+      .replace(/_/g, " ")
+      .replace(/\b\w/g, (char) => char.toUpperCase());
   }
 }
 
