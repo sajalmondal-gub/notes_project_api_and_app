@@ -1,4 +1,5 @@
-import { Pool } from "pg";
+import pkg from "pg";
+const { Pool } = pkg;
 
 // config from env
 
@@ -24,7 +25,10 @@ pool.on("error", (err) => {
   );
 });
 
-module.exports = {
-  query: (text, params) => pool.query(text, params),
+export const query = (text, params) => pool.query(text, params);
+export { pool };
+
+export default {
+  query,
   pool,
 };
