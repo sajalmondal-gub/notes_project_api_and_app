@@ -10,7 +10,7 @@ const setAuthCookie = (res, token) => {
 };
 
 class AuthController {
-  async register(req, res) {
+  register = async (req, res) => {
     const validatedData = authValidator.validateRegister(req.body);
     const { user, token } = await authService.registerUser(validatedData);
     setAuthCookie(res, token);
@@ -20,8 +20,9 @@ class AuthController {
       user,
       token,
     });
-  }
-  async login(req, res) {
+  };
+
+  login = async (req, res) => {
     const validatedData = authValidator.validateLogin(req.body);
     const { user, token } = await authService.loginUser(validatedData);
     setAuthCookie(res, token);
@@ -31,12 +32,16 @@ class AuthController {
       user,
       token,
     });
-  }
+  };
 
-  async forgotPassword(req, res) {
+  forgotPassword = async (req, res) => {
     const { email } = req.body;
-    if (!email)
-      res.sendJSON(400, { success: false, message: "Email is required." });
+    if (!email) {
+      return res.sendJSON(400, {
+        success: false,
+        message: "Email is required.",
+      });
+    }
     const resetUrl = await authService.processForgotPassword(email);
     console.log(`✉️ Email Sent: ${resetUrl}`);
     res.sendJSON(200, {
@@ -44,15 +49,15 @@ class AuthController {
       message: "Password reset link sent to email.",
       ...(config.NODE_ENV === "development" && { dev_token_link: resetUrl }),
     });
-  }
+  };
 
-  async logout(req, res) {
+  logout = async (req, res) => {
     res.setHeader(
       "Set-Cookie",
       "accessToken=; HttpOnly; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT; Max-Age=0; SameSite=Strict",
     );
     res.sendJSON(200, { success: true, message: "Logged out successfully." });
-  }
+  };
 }
 
-export default AuthController;
+export default new AuthController();

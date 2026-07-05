@@ -14,18 +14,20 @@ class AuthService {
     }
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(sanitizedData.password, salt);
-    const newUserModel = await userRepository.create(
-      sanitizedData.name,
-      sanitizedData.email,
-      hashedPassword,
-    );
-    // token
-    const token = generateToken(newUserModel);
-    return { user: newUserModel.toJSON(), token };
+    
+    const newUserRow = await userRepository.create({
+      name: sanitizedData.name,
+      email: sanitizedData.email,
+      password: hashedPassword,
+    });
+    
+    const userModel = new UserModel(newUserRow);
+    const token = this.generateToken(userModel);
+    return { user: userModel.toJSON(), token };
   }
 
   async loginUser(sanitizedData) {
-    const userRow = await userRepository.findByEmail(email);
+    const userRow = await userRepository.findByEmail(sanitizedData.email);
     if (!userRow) {
       throw new AppError("Invalid email or password.", 401);
     }
@@ -38,7 +40,8 @@ class AuthService {
       throw new AppError("Invalid email or password.", 401);
     }
     const userModel = new UserModel(userRow);
-    const token = generateToken(userModel);
+    
+    const token = this.generateToken(userModel);
 
     return { user: userModel.toJSON(), token };
   }
@@ -72,4 +75,4 @@ class AuthService {
   }
 }
 
-export default new AuthService;
+export default new AuthService();
