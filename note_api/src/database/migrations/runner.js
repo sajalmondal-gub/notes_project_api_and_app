@@ -1,17 +1,31 @@
+import dotenv from "dotenv";
 import fs from "fs/promises";
 import path from "path";
-import db from "../../config/database";
+import { fileURLToPath } from "url";
+
+// ১. আগে এনভায়রনমেন্ট এবং পাথ রেডি করা
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// ২. ডাটাবেজ মডিউল টাচ করার আগেই .env ফাইল লোড করা হলো নিশ্চিতভাবে
+dotenv.config({ path: path.join(__dirname, "../../../.env") });
 
 async function runMigrations() {
+  // 👈 ৩. ডাইনামিক ইম্পোর্ট: .env লোড হওয়ার পর ডাটাবেজ ফাইল রিড করা হচ্ছে
+  const databaseModule = await import("../../config/database.js");
+  const db = databaseModule.default;
+
   const client = await db.pool.connect();
   try {
     console.log(
       "\n⏳ [MIGRATION] Initializing enterprise database migration...",
     );
     await client.query("BEGIN");
+
     const migrationFolder = __dirname;
     const files = await fs.readdir(migrationFolder);
     const sqlFiles = files.filter((file) => file.endsWith(".sql")).sort();
+
     for (const file of sqlFiles) {
       const filePath = path.join(migrationFolder, file);
       const sqlQuery = await fs.readFile(filePath, "utf-8");
@@ -19,6 +33,7 @@ async function runMigrations() {
       console.log(`⚙️  [MIGRATION] Executing: ${file}`);
       await client.query(sqlQuery);
     }
+
     await client.query("COMMIT");
     console.log(
       "✅ [MIGRATION SUCCESS] All structural files migrated without errors.\n",
@@ -35,8 +50,8 @@ async function runMigrations() {
   }
 }
 
-if (require.main === module) {
-  require("dotenv").config({ path: path.join(__dirname, "../../.env") });
+if (process.argv[1] === __filename) {
   runMigrations().then(() => process.exit(0));
 }
-module.exports = runMigrations;
+
+export default runMigrations;
