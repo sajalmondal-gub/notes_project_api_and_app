@@ -8,19 +8,17 @@ class UserRepository {
     return new Users(result.rows[0]);
   }
 
-  async create(usersModelInstance) {
+  async create(userData) {
     const sql = `
-            INSERT INTO users (name, email, password) 
-            VALUES ($1, $2, $3) 
-            RETURNING *
-        `;
+          INSERT INTO users (name, email, password) VALUES ($1, $2, $3) RETURNING id, name, email, created_at `;
+
     const values = [
-      usersModelInstance.title,
-      usersModelInstance.content,
-      usersModelInstance.userId,
+      userData.name,
+      userData.email.toLowerCase().trim(),
+      userData.password,
     ];
     const result = await db.query(sql, values);
-    return new Users(result.rows[0]);
+    return result.rows[0];
   }
 }
 
