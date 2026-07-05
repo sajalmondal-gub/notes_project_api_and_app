@@ -1,25 +1,28 @@
 import config from "../config/env";
 
-module.expots = async function bodyParse(req, res, next) {
+export default async function bodyParse(req, res, next) {
   if (!["PUT", "POST", "PATCH"].includes(req.method)) {
     req.body = {};
     return await next();
   }
   return new Promise((resolve) => {
     let body = "";
-    const MAX_SIZE = 2 * 1204 * 1204; //size declear
+    const MAX_SIZE = 2 * 1024 * 1024; //size declear
+    let received = 0;
 
     req.on("data", (chunk) => {
-      body += chunk.toString();
-      if (body.length > MAX_SIZE) {
+      received += chunk.length;
+      if (received > MAX_SIZE) {
         res.sendJSON(413, {
           error: "Payload Too Large",
           message: "Max body limit is 2MB",
         });
         req.destroy();
-        resolve();
+        return resolve();
       }
+      body += chunk;
     });
+
     req.on("end", async () => {
       try {
         const contentType = req.headers["content-type"] || "";
@@ -28,11 +31,18 @@ module.expots = async function bodyParse(req, res, next) {
         } else {
           req.body = body;
         }
-        resolve(awaitnext());
+        resolve(await next());
       } catch (error) {
         res.sendJSON(400, { error: "Malformed JSON Payload" });
         resolve();
       }
     });
+    req.on("error", () => {
+      res.sendJSON(400, {
+        error: "Request Stream Error",
+      });
+
+      resolve();
+    });
   });
-};
+}

@@ -10,7 +10,6 @@ class Application {
     this.globalMiddlewares.push(middleware);
   }
   // requst handling main pipline
-
   async handle(req, res, router) {
     // native ojebject boost of node
     req = Request.extend(req);
@@ -22,18 +21,16 @@ class Application {
     if (routeHandlers) {
       pipeline.push(...routeHandlers);
     } else {
-      const notFound = notFoundMiddleware;
-      pipeline.push(notFound);
+      pipeline.push(notFoundMiddleware);
     }
 
     let index = 0;
     const next = async () => {
-      if (index > pipeline.length) {
-        return;
-      }
+      if (res.writableEnded) return;
+      if (index >= pipeline.length) return;
       const currentHandler = pipeline[index++];
       try {
-        await currentHandler(req, req, next);
+        await currentHandler(req, res, next);
       } catch (error) {
         const errorHandler = ErrorHandeler;
         await errorHandler(error, req, res);
@@ -42,4 +39,5 @@ class Application {
     await next();
   }
 }
-module.exports = Application;
+
+export default Application;
