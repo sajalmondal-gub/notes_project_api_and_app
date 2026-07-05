@@ -1,15 +1,12 @@
-import Application from "./core/application";
-import bodyParser from "./core/bodyParser";
-import Logger from "./middlewares/logger.middleware";
-import cors from "./middlewares/cors.middleware";
-import apiRouter from "./routes/index";
+import Application from "./core/application.js";
+import bodyParser from "./core/bodyParser.js";
+import Logger from "./middlewares/logger.middleware.js";
+import cors from "./middlewares/cors.middleware.js";
+import apiRouter from "./routes/index.js";
 
 const app = new Application();
 app.use(Logger);
 app.use(cors);
 app.use(bodyParser);
 
-module.exports = {
-  app,
-  router: apiRouter,
-};
+export { app, apiRouter as router };

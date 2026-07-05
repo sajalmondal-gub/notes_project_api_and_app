@@ -1,7 +1,8 @@
-module.exports = async function notFoundMiddleware(req, res) {
-    res.sendJSON(404, {
-        success: false,
-        error: "NotFoundError",
-        message: `The path [${req.method}] ${req.path} does not exist.`
-    });
-};
+export default async function notFoundMiddleware(req, res) {
+  if (res.writableEnded) return;
+  res.sendJSON(404, {
+    success: false,
+    error: "NotFoundError",
+    message: `Cannot ${req.method} ${req.path}`,
+  });
+}

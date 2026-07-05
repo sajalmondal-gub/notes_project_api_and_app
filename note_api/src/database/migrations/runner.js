@@ -27,8 +27,8 @@ async function runMigrations() {
 
     for (const file of sqlFiles) {
       const filePath = path.join(migrationFolder, file);
-      const sqlQuery = await fs.readFile(filePath, "utf-8");
-      if (file.includes["user_seeder"]) {
+      let  sqlQuery = await fs.readFile(filePath, "utf-8");
+      if (file.includes("user_seeder")) {
         sqlQuery = sqlQuery.replace("{{password}}", passwordHash);
       }
       console.log(`⚙️  [MIGRATION] Executing: ${file}`);
@@ -52,7 +52,14 @@ async function runMigrations() {
 }
 
 if (process.argv[1] === __filename) {
-  runMigrations().then(() => process.exit(0));
+  const databaseModule = await import("../../config/database.js");
+  const db = databaseModule.default;
+  try {
+    await runMigrations();
+  } finally {
+    await db.pool.end();
+    process.exit(0);
+  }
 }
 
 export default runMigrations;
