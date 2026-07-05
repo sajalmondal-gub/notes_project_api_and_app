@@ -6,7 +6,9 @@
   "type": "module",
   "scripts": {
     "start": "node src/server.js",
-    "migrate": "node src/database/migrations/runner.js"
+    "migrate": "node src/database/migrations/runner.js",
+    "seed": "node src/database/seeder/runner.js",
+    "db:fresh": "node src/database/migrations/runner.js && node src/database/seeders/runner.js"
   },
   "keywords": [],
   "author": "",
