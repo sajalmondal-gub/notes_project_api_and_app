@@ -2,7 +2,7 @@ import { createServer } from "http";
 import config from "./config/env.js";
 import { app, router } from "./app.js";
 
-const server = createServer((req, res) => {
+const server = createServer(async (req, res) => {
   try {
     await app.handle(req, res, router);
   } catch (err) {

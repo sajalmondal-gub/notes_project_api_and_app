@@ -1,4 +1,4 @@
-import Users from "../models/user.model";
+import Users from "../models/user.model.js";
 import db from "../config/database.js";
 class UserRepository {
   async findById(id) {

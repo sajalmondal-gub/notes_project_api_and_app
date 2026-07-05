@@ -1,4 +1,4 @@
-import config from "../config/env";
+import config from "../config/env.js";
 
 export default async function bodyParse(req, res, next) {
   if (!["PUT", "POST", "PATCH"].includes(req.method)) {

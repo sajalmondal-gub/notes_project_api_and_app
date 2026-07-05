@@ -1,7 +1,7 @@
-import Request from "./request";
-import Response from "./response";
-import notFoundMiddleware from "../middlewares/notFound.middleware";
-import ErrorHandeler from "../middlewares/error.middleware";
+import Request from "./request.js";
+import Response from "./response.js";
+import notFoundMiddleware from "../middlewares/notFound.middleware.js";
+import ErrorHandeler from "../middlewares/error.middleware.js";
 class Application {
   constructor() {
     this.globalMiddlewares = [];
