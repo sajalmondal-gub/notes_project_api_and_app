@@ -15,7 +15,7 @@ class AuthValidator {
     }
     return result.data;
   }
-  static validateLogin() {
+  static validateLogin(body) {
     const rules = {
       email: "required|max:150",
       password: "required|min:6|max:100",
