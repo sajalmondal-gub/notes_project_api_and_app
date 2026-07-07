@@ -27,6 +27,18 @@ class UserRepository {
     const result = await db.query(sql, values);
     return result.rows[0];
   }
+
+  async updateResetToken(id, hashedToken, expiry) {
+    const sql = `UPDATE users SET reset_password_token = $1, reset_password_expires = $2 WHERE id = $3`;
+    await db.query(sql, [hashedToken, expiry, id]);
+  }
+
+  async findByResetToken(hashedToken) {
+    const sql = `SELECT * FROM users WHERE reset_password_token = $1 AND reset_password_expires > NOW() LIMIT 1`;
+    const result = await db.query(sql, [hashedToken]);
+    if (result.rows.length === 0) return null;
+    return new Users(result.rows[0]);
+  }
 }
 
 export default new UserRepository();
