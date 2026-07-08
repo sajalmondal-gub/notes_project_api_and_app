@@ -11,7 +11,7 @@ class Users {
   }) {
     this.id = id;
     this.name = name;
-    this.eamil = email;
+    this.email = email;
     this.password = password;
     this.reset_password_expires = reset_password_expires;
     this.reset_password_token = reset_password_token;

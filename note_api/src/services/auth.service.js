@@ -5,7 +5,7 @@ import userRepository from "../repositories/user.repository.js";
 import UserModel from "../models/user.model.js";
 import AppError from "../utils/app-error.js";
 import config from "../config/env.js";
-import { sendResetEmail } from "../utils/mailer.js";
+import { sendResetMail } from "../utils/mailer.js";
 
 class AuthService {
   async registerUser(sanitizedData) {
@@ -49,6 +49,7 @@ class AuthService {
 
   async processForgotPassword(email) {
     const userRow = await userRepository.findByEmail(email);
+    
     if (!userRow) {
       throw new AppError("No account found with this email.", 404);
     }
@@ -64,7 +65,7 @@ class AuthService {
       tokenExpiry,
     );
     const resetUrl = `${config.CLIENT_URL}/reset-password?token=${resetToken}`;
-    await sendResetEmail(user.email, resetUrl);
+    await sendResetMail(userRow.email, resetUrl);
     return resetUrl;
   }
 
