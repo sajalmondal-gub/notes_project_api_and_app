@@ -16,9 +16,14 @@ const apiLimiter = rateLimiter({
   message: "Too many requests. Slow down!",
 });
 
-authRouter.post("/register",apiLimiter, AuthController.register);
-authRouter.post("/login", loginLimiter,AuthController.login);
-authRouter.post("/forgot-password", loginLimiter, AuthController.forgotPassword);
+authRouter.post("/register", apiLimiter, AuthController.register);
+authRouter.post("/login", loginLimiter, AuthController.login);
+authRouter.post(
+  "/forgot-password",
+  loginLimiter,
+  AuthController.forgotPassword,
+);
+authRouter.post("/reset-password", loginLimiter, AuthController.resetPassword);
 authRouter.post("/logout", AuthController.logout);
 
 export default authRouter;
