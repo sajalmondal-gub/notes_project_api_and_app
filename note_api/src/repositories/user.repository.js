@@ -39,6 +39,11 @@ class UserRepository {
     if (result.rows.length === 0) return null;
     return new Users(result.rows[0]);
   }
+
+  async updatePassword(id, hashedPassword) {
+    const sql = `UPDATE users SET password = $1, reset_password_token = NULL, reset_password_expires = NULL WHERE id = $2`;
+    await db.query(sql, [hashedPassword, id]);
+  }
 }
 
 export default new UserRepository();
