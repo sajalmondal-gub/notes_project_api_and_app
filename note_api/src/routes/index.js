@@ -1,4 +1,5 @@
 import v1AuthRouter from "./v1/auth.routes.js";
+import v1DashboardRouter from "./v1/dashboard.routes.js";
 
 export default async function apiRouter(req, res, next) {
   const originalPath = req.path;
@@ -12,6 +13,9 @@ export default async function apiRouter(req, res, next) {
       if (req.path.startsWith("/api/v1/auth")) {
         req.path = req.path.replace("/api/v1/auth", "") || "/";
         handlers = v1AuthRouter.match(req);
+      } else if (req.path.startsWith("/api/v1/dashboard")) {
+        req.path = req.path.replace("/api/v1/dashboard", "") || "/";
+        handlers = v1DashboardRouter.match(req);
       }
     }
   }

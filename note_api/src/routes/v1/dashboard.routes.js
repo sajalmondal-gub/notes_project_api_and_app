@@ -1,7 +1,7 @@
-import DashboardController from "../../controllers/dashboard.controller";
-import Router from "../../core/router";
-import rateLimiter from "../../middlewares/rateLimiter.middleware";
-import { protect } from "../../middlewares/auth.middleware";
+import DashboardController from "../../controllers/dashboard.controller.js";
+import Router from "../../core/router.js";
+import rateLimiter from "../../middlewares/rateLimiter.middleware.js";
+import { protect } from "../../middlewares/auth.middleware.js";
 
 const dashboardRouter = new Router();
 const apiLimiter = rateLimiter({

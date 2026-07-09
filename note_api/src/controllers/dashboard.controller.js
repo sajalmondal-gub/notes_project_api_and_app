@@ -1,5 +1,5 @@
 class DashboardController {
-  getDashboardData = async () => {
+  getDashboardData = async (req, res) => {
     res.sendJSON(200, {
       success: true,
       message: `Welcome back !`,

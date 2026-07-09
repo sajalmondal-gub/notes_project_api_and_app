@@ -11,7 +11,7 @@ const parseCookies = (cookieHeader) => {
   return list;
 };
 
-export const protect = (req, res, next) => {
+export const protect =async (req, res, next) => {
   try {
     let token;
     
@@ -31,7 +31,7 @@ export const protect = (req, res, next) => {
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     
-    req.user = { id: decoded.id, role: decoded.role };
+    req.user = { id: decoded.id };
     await next(); 
   } catch (error) {
     throw error; 
