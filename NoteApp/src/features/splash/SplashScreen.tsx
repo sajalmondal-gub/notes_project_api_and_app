@@ -1,6 +1,6 @@
 import React from "react";
 import { markFirstTimeCompleted } from "../../services/storage/asyncStorage";
-import { View, Text, TouchableOpacity } from "react-native";
+import { View, Text, TouchableOpacity, Image } from "react-native";
 import Animated, { FadeIn, FadeInDown } from "react-native-reanimated";
 import { useTheme } from "../../theme";
 
@@ -23,16 +23,14 @@ export const SplashScreen = ({ onFinish }: SplashScreenProps) => {
         >
             <Animated.View
                 entering={FadeIn.duration(1000)}
-                className="w-32 h-32 rounded-[32px] items-center justify-center mb-8 shadow-sm"
-                style={{ backgroundColor: colors.primary.subtle }}
+                className=" items-center justify-center  shadow-sm"
             >
-                <Text
-                    className="text-6xl font-bold"
-                    style={{ color: colors.primary.default }}
-                >
-                    N
-                </Text>
+                <Image
+                    source={require('../../assets/logo/note_logo.png')}
+                    style={{ height: 150, width: 150 }}
+                />
             </Animated.View>
+
             <Animated.View
                 entering={FadeInDown.duration(1000).delay(300)}
                 className="items-center w-full"
