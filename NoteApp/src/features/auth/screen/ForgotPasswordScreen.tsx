@@ -2,15 +2,17 @@ import React from "react";
 import { Text, View } from "react-native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { AuthStackParamList } from "../../../types";
-type RegisterNavigationProps = NativeStackNavigationProp<AuthStackParamList, 'Register'>
+
+type ForgotPasswordNavigatonProps = NativeStackNavigationProp<AuthStackParamList, 'ForgotPassword'>
 interface Props {
-    navigation: RegisterNavigationProps
+    navigation: ForgotPasswordNavigatonProps;
 }
 
-export const RegisterScreen: React.FC<Props> = ({ navigation }) => {
+
+export const ForgotPasswordScreen: React.FC<Props> = ({ navigation }) => {
     return (
         <View>
-            <Text>this is registration page</Text>
+            <Text>This is forgot password</Text>
         </View>
     );
 }

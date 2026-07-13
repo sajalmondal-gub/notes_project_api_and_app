@@ -3,9 +3,9 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { AuthStackParamList } from "../../types";
 
 // Feature screens import
-import { LoginScreen } from '../../features/auth/screens/LoginScreen';
-import { RegisterScreen } from '../../features/auth/screens/RegisterScreen';
-import { ForgotPasswordScreen } from '../../features/auth/screens/ForgotPasswordScreen';
+import { LoginScreen } from '../../features/auth/screen/LoginScreen';
+import { RegisterScreen } from '../../features/auth/screen/RegisterScreen';
+import { ForgotPasswordScreen } from '../../features/auth/screen/ForgotPasswordScreen';
 
 const AuthStack = createNativeStackNavigator<AuthStackParamList>();
 export const AuthNavigator: React.FC = () => {
