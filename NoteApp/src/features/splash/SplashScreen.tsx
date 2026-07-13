@@ -30,7 +30,6 @@ export const SplashScreen = ({ onFinish }: SplashScreenProps) => {
                     style={{ height: 150, width: 150 }}
                 />
             </Animated.View>
-
             <Animated.View
                 entering={FadeInDown.duration(1000).delay(300)}
                 className="items-center w-full"
@@ -48,7 +47,6 @@ export const SplashScreen = ({ onFinish }: SplashScreenProps) => {
                     Capture your thoughts, organize your workspace, and boost your productivity seamlessly.
                 </Text>
             </Animated.View>
-
             {/* Call to Action Button */}
             <Animated.View
                 entering={FadeInDown.duration(1000).delay(600)}
