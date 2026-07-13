@@ -6,6 +6,8 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../types';
 import { checkFirstTime, markFirstTimeCompleted } from '../../services/storage/asyncStorage';
 
+import { useAuth } from '../../hooks/useAuth';
+
 // Screen & Internal Navigators
 import { SplashScreen } from '../../features/splash/SplashScreen';
 import { AuthNavigator } from './AuthNavigator';

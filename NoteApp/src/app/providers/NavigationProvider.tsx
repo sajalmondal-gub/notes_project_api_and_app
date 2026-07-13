@@ -1,15 +1,36 @@
 import React from 'react';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { NavigationContainer } from '@react-navigation/native';
 import { RootNavigator } from '../navigation/RootNavigator';
+import { ThemeProvider, useTheme } from '../../theme';
+import { StatusBar } from 'react-native';
 
-export const NavigationProvider: React.FC = () => {
+
+const AppNavigationInner: React.FC = () => {
+    const { isDark, colors } = useTheme();
+
     return (
-        <SafeAreaProvider>
+        <>
+            {/* Dynamic Native System Status Bar */}
+            <StatusBar
+                barStyle={isDark ? 'light-content' : 'dark-content'}
+                backgroundColor={colors.background.primary}
+                translucent={false}
+            />
             <NavigationContainer>
-                {/* Dynamic native context controller bridge loop */}
                 <RootNavigator />
             </NavigationContainer>
+        </>
+    );
+}
+
+export const NavigationProvider: React.FC = () => {
+    const { isDark, colors } = useTheme();
+    return (
+        <SafeAreaProvider>
+            <ThemeProvider>
+                <AppNavigationInner />
+            </ThemeProvider>
         </SafeAreaProvider>
     );
 };
