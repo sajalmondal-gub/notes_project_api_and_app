@@ -21,7 +21,7 @@ export const RootNavigator = () => {
 
     const [isInitializing, setIsInitializing] = useState<boolean>(true);
     const [isFirstTimeUser, setIsFirstTimeUser] = useState<boolean>(true);
-    const { isAuthenticated } = useAuth();
+    const { isAuthenticated, authLoading } = useAuth();
 
     useEffect(() => {
         const runSystemCheck = async () => {
@@ -38,9 +38,9 @@ export const RootNavigator = () => {
         runSystemCheck();
     }, []);
     // System Loading state controller layout barrier protection shield
-    if (isInitializing) {
+    if (isInitializing || authLoading) {
         return (
-            <View style={StyleSheet.absoluteFillObject} className="flex-1 justify-center items-center">
+            <View style={StyleSheet.absoluteFill} className="flex-1 justify-center items-center">
                 <ActivityIndicator size="large" color="#0052CC" />
             </View>
         );
