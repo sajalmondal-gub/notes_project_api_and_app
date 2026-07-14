@@ -25,7 +25,6 @@ const AppNavigationInner: React.FC = () => {
 }
 
 export const NavigationProvider: React.FC = () => {
-    const { isDark, colors } = useTheme();
     return (
         <SafeAreaProvider>
             <ThemeProvider>

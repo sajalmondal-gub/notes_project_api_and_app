@@ -40,8 +40,8 @@ export const RootNavigator = () => {
     // System Loading state controller layout barrier protection shield
     if (isInitializing) {
         return (
-            <View>
-                <ActivityIndicator size="small" color="#0052CC" />
+            <View style={StyleSheet.absoluteFillObject} className="flex-1 justify-center items-center">
+                <ActivityIndicator size="large" color="#0052CC" />
             </View>
         );
     }

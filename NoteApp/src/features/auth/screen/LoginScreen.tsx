@@ -11,8 +11,8 @@ interface Props {
 
 export const LoginScreen: React.FC<Props> = ({ navigation }) => {
     return (
-        <View>
-            <Text>this is login screen</Text>
+        <View className="flex-1 justify-center items-center bg-white">
+            <Text className="text-xl text-black">this is login screen</Text>
         </View>
     );
 }
