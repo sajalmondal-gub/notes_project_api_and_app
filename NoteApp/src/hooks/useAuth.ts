@@ -1,4 +1,7 @@
 import { useEffect, useState } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { authApiService } from '../features/auth/authService';
+import { LoginRequestPayload } from '../features/auth/types';
 
 export interface AuthUserState {
   id: string;
@@ -11,84 +14,46 @@ export const useAuth = () => {
   // Enterprise internal core auth states
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [authLoading, setAuthLoading] = useState<boolean>(true);
-  const [user, setUser] = useState<AuthUserState | null>(null);
-
-  useEffect(() => {
-    // Local memory tracking optimization pipeline check
-    const bootstrapAuthState = async () => {
-      try {
-        // Redux store ba encrypted storage (MMKV/AsyncStorage) theke token parsing setup
-        // const storedToken = await storage.getItem('user_token');
-
-        const mockTokenExists = false; // Simulation marker logic block
-
-        if (mockTokenExists) {
-          setIsAuthenticated(true);
-          setUser({
-            id: 'usr_2026',
-            email: 'user@enterprise.com',
-            fullName: 'John Doe',
-            token: 'jwt_secure_token_string',
-          });
-        } else {
-          setIsAuthenticated(false);
-          setUser(null);
-        }
-      } catch (tokenSyncError) {
-        console.error('Auth state orchestration failed:', tokenSyncError);
-      } finally {
-        setAuthLoading(false);
-      }
-    };
-
-    bootstrapAuthState();
-  }, []);
-
+  const [authError, setAuthError] = useState<string | null>(null);
   /**
    * Application context business processes payload login implementation logic
    */
-  const login = async (email: string, password: string): Promise<void> => {
+  const login = async (credentials: LoginRequestPayload): Promise<void> => {
     setAuthLoading(true);
+    setAuthError(null);
     try {
-      // API call orchestration pipeline template structure:
-      // const response = await api.post('/auth/login', { email, password });
 
-      // Verification successful transaction logic simulated response execution:
-      setIsAuthenticated(true);
-      setUser({
-        id: 'usr_2026',
-        email: email,
-        fullName: 'Enterprise User',
-        token: 'jwt_mock_token_response_payload',
-      });
-    } catch (apiError) {
-      console.error('Sign-in processing failure logic mapping:', apiError);
-      throw apiError;
+      const apiResult = await authApiService.login(credentials);
+      if (apiResult.success && apiResult.data.token) {
+        await AsyncStorage.setItem('user_token', apiResult.data.token);
+        await AsyncStorage.setItem('refresh_token', apiResult.data.refreshToken);
+        setIsAuthenticated(true);
+      } else {
+        throw new Error(apiResult.message || 'Server connection layout failed');
+      }
+    } catch (networkError: any) {
+      const parsedError = networkError?.response?.data?.message || networkError.message || 'Authentication failed';
+      setAuthError(parsedError);
+      throw new Error(parsedError);
     } finally {
       setAuthLoading(false);
     }
   };
 
-  /**
-   * Revoke credentials security access token purge engine sequence
-   */
   const logout = async (): Promise<void> => {
-    setAuthLoading(true);
     try {
-      // Clear security token profiles storage matrices here
+      await AsyncStorage.removeItem('user_token');
+      await AsyncStorage.removeItem('refresh_token');
       setIsAuthenticated(false);
-      setUser(null);
-    } catch (purgeError) {
-      console.warn('Cache clearance session interruption trace:', purgeError);
-    } finally {
-      setAuthLoading(false);
+    } catch (err) {
+      console.warn('Session termination failure:', err);
     }
   };
 
   return {
     isAuthenticated,
     authLoading,
-    user,
+    authError,
     login,
     logout,
   };

@@ -1,10 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import { Image, Text, TextInput, View, TouchableOpacity } from "react-native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { AuthStackParamList } from "../../../types";
 import { useTheme } from "../../../theme";
 import Animated, { FadeIn, FadeInDown } from "react-native-reanimated";
 import Icon from '@react-native-vector-icons/ionicons';
+import { useAuth } from "../../../hooks/useAuth";
 
 type LoginScreenNavigationProp = NativeStackNavigationProp<AuthStackParamList, "Login">
 
@@ -17,6 +18,27 @@ interface Props {
 
 export const LoginScreen: React.FC<Props> = ({ navigation }) => {
     const { colors, typography, radius } = useTheme();
+    const [email, setEmail] = useState<string>('');
+    const [password, setPassword] = useState<string>('');
+    const { login, authLoading, authError } = useAuth();
+    const [validationErrors, setValidationErrors] = useState<{email?: string, password?: string}>({});
+
+    const handleAuthenticationWorkflow = async () => {
+        const errors: {email?: string, password?: string} = {};
+        if (!email) errors.email = 'Email is required';
+        if (!password) errors.password = 'Password is required';
+        
+        setValidationErrors(errors);
+        if (Object.keys(errors).length > 0) return;
+
+        try {
+            await login({ email, password });
+            // Logic success execution run hole RootNavigator runtime stack switch condition auto dynamic shift trigger korbe
+        } catch (error: any) {
+            // Dynamic inline layout handler response error track
+            console.log('Login failed visually: ', error.message);
+        }
+    };
     return (
         <View className="flex-1 justify-center items-center" style={{ backgroundColor: colors.background.primary }}>
             <Animated.View entering={FadeIn.duration(1500)} className="items-center justify-center shadow-md">
@@ -34,6 +56,10 @@ export const LoginScreen: React.FC<Props> = ({ navigation }) => {
                     <TextInput
                         placeholder="Enter your email"
                         placeholderTextColor={colors.text.disabled}
+                        value={email}
+                        onChangeText={(text) => { setEmail(text); setValidationErrors(prev => ({...prev, email: undefined})) }}
+                        autoCapitalize="none"
+                        keyboardType="email-address"
                         style={{
                             backgroundColor: colors.background.secondary,
                             color: colors.text.primary,
@@ -42,9 +68,10 @@ export const LoginScreen: React.FC<Props> = ({ navigation }) => {
                             paddingVertical: 14,
                             fontSize: typography.fontSizes.lg,
                             borderWidth: 1,
-                            borderColor: colors.border?.default || 'transparent'
+                            borderColor: validationErrors.email ? 'red' : (colors.border?.default || 'transparent')
                         }}
                     />
+                    {validationErrors.email && <Text style={{ color: 'red', fontSize: typography.fontSizes.xs, marginTop: 4, marginLeft: 4 }}>{validationErrors.email}</Text>}
                 </View>
 
                 <View className="mb-6">
@@ -53,6 +80,8 @@ export const LoginScreen: React.FC<Props> = ({ navigation }) => {
                         placeholder="Enter your password"
                         placeholderTextColor={colors.text.disabled}
                         secureTextEntry
+                        value={password}
+                        onChangeText={(text) => { setPassword(text); setValidationErrors(prev => ({...prev, password: undefined})) }}
                         style={{
                             backgroundColor: colors.background.secondary,
                             color: colors.text.primary,
@@ -61,15 +90,19 @@ export const LoginScreen: React.FC<Props> = ({ navigation }) => {
                             paddingVertical: 14,
                             fontSize: typography.fontSizes.lg,
                             borderWidth: 1,
-                            borderColor: colors.border?.default || 'transparent'
+                            borderColor: validationErrors.password ? 'red' : (colors.border?.default || 'transparent')
                         }}
                     />
+                    {validationErrors.password && <Text style={{ color: 'red', fontSize: typography.fontSizes.xs, marginTop: 4, marginLeft: 4 }}>{validationErrors.password}</Text>}
+                    {authError && <Text style={{ color: 'red', fontSize: typography.fontSizes.sm, marginTop: 8, textAlign: 'center' }}>{authError}</Text>}
                     <Text style={{ color: colors.text.brand, fontSize: typography.fontSizes.sm, marginTop: 8, textAlign: 'right', fontWeight: typography.fontWeights.semibold }}>Forgot Password?</Text>
                 </View>
 
                 <TouchableOpacity
+                    onPress={handleAuthenticationWorkflow}
+                    disabled={authLoading}
                     style={{
-                        backgroundColor: colors.text.brand,
+                        backgroundColor: authLoading ? colors.border?.default || '#ccc' : colors.text.brand,
                         paddingVertical: 16,
                         borderRadius: radius.xl,
                         alignItems: 'center',
@@ -81,7 +114,9 @@ export const LoginScreen: React.FC<Props> = ({ navigation }) => {
                         elevation: 5,
                     }}
                 >
-                    <Text style={{ color: colors.text.primary, fontSize: typography.fontSizes.lg, fontWeight: typography.fontWeights.bold }}>Log In</Text>
+                    <Text style={{ color: colors.text.primary, fontSize: typography.fontSizes.lg, fontWeight: typography.fontWeights.bold }}>
+                        {authLoading ? 'Logging In...' : 'Log In'}
+                    </Text>
                 </TouchableOpacity>
 
                 <View className="flex-row items-center mt-8 mb-6">
