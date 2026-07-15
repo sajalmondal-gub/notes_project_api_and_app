@@ -1,6 +1,7 @@
 import authValidator from "../validators/auth.validator.js";
 import authService from "../services/auth.service.js";
 import config from "../config/env.js";
+import AppError from "../utils/app-error.js";
 
 const setAuthCookie = (res, token) => {
   res.setHeader(
