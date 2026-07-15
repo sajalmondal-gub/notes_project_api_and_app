@@ -2,7 +2,7 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { API_BASE_URL as ENV_API_BASE_URL } from '@env';
 
-const API_BASE_URL = ENV_API_BASE_URL || 'https://api.notesapp.com/v1';
+const API_BASE_URL = ENV_API_BASE_URL;
 
 export const apiClient = axios.create({
     baseURL: API_BASE_URL,
@@ -11,6 +11,7 @@ export const apiClient = axios.create({
     },
     timeout: 10000,
 });
+
 
 apiClient.interceptors.request.use(
     async (config) => {
