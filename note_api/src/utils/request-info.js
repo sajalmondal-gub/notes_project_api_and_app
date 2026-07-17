@@ -1,30 +1,30 @@
 import http from "https";
 
 export const getLocationFromIP = (ip) => {
-  return Promise((resolve) => {
+  return new Promise((resolve) => {
     if (ip === "::1" || ip === "127.0.0.1" || ip.startsWith("192.168.")) {
       return resolve("Localhost");
     }
-  });
-  http.get(`https://ip-api.com/json/${ip}`, (res) => {
-    let data = "";
-    res.on("data", (chunk) => (data += chunk));
-    res
-      .on("end", () => {
-        try {
-          const parsed = JSON.parse(data);
-          if (parsed.status === "success") {
-            resolve(`${parsed.city}, ${parsed.country}`);
-          } else {
+    http.get(`https://ip-api.com/json/${ip}`, (res) => {
+      let data = "";
+      res.on("data", (chunk) => (data += chunk));
+      res
+        .on("end", () => {
+          try {
+            const parsed = JSON.parse(data);
+            if (parsed.status === "success") {
+              resolve(`${parsed.city}, ${parsed.country}`);
+            } else {
+              resolve("Unknown Location");
+            }
+          } catch (error) {
             resolve("Unknown Location");
           }
-        } catch (error) {
+        })
+        .on("error", () => {
           resolve("Unknown Location");
-        }
-      })
-      .on("error", () => {
-        resolve("Unknown Location");
-      });
+        });
+    });
   });
 };
 
