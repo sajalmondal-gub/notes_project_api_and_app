@@ -38,7 +38,7 @@ export const RootNavigator = () => {
         runSystemCheck();
     }, []);
     // System Loading state controller layout barrier protection shield
-    if (isInitializing || authLoading) {
+    if (isInitializing) {
         return (
             <View style={StyleSheet.absoluteFill} className="flex-1 justify-center items-center">
                 <ActivityIndicator size="large" color="#0052CC" />
