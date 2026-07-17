@@ -50,12 +50,20 @@ export const RegisterScreen: React.FC<Props> = ({ navigation }) => {
                         placeholderTextColor={colors.text.secondary}
                         value={email}
                         autoCapitalize="none"
-
-
+                        keyboardType="email-address"
+                        style={{
+                            backgroundColor: colors.background.secondary,
+                            color: colors.text.disabled,
+                            borderRadius: radius.lg,
+                            paddingHorizontal: 16,
+                            paddingVertical: 14,
+                            borderWidth: 1,
+                            borderColor: validationErrors.email ? 'red' : (colors.border.default || 'transparent')
+                        }}
                     />
-
-
+                    {validationErrors.email && <Text style={{ color: 'red', fontSize: typography.fontSizes.sm, fontWeight: typography.fontWeights.medium }}>{validationErrors.email} </Text>}
                 </View>
+                <View></View>
             </View>
 
         </View>
