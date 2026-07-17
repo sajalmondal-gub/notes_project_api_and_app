@@ -13,7 +13,9 @@ export const RegisterScreen: React.FC<Props> = ({ navigation }) => {
     const { colors, typography, radius } = useTheme();
     const [full_name, setFullName] = useState<string>('');
     const [email, setEmail] = useState<string>('');
-    const [validationErrors, setValidationErrors] = useState<{ full_name?: string, email?: string, password?: string }>({});
+    const [password, setPassword] = useState<string>('');
+    const [cofirm_password, setCofirmPassword] = useState<string>('');
+    const [validationErrors, setValidationErrors] = useState<{ full_name?: string, email?: string, password?: string, confirm_password?: string }>({});
     return (
 
         <View className="flex-1 justify-center items-center px-5" style={{ backgroundColor: colors.background.primary }}>
@@ -63,7 +65,46 @@ export const RegisterScreen: React.FC<Props> = ({ navigation }) => {
                     />
                     {validationErrors.email && <Text style={{ color: 'red', fontSize: typography.fontSizes.sm, fontWeight: typography.fontWeights.medium }}>{validationErrors.email} </Text>}
                 </View>
-                <View></View>
+                <View className="mb-5">
+                    <Text style={{ color: colors.text.secondary, fontSize: typography.fontSizes.sm, fontWeight: typography.fontWeights.medium, paddingBottom: 5 }}>Password *</Text>
+                    <TextInput
+                        placeholder="*******"
+                        placeholderTextColor={colors.text.secondary}
+                        value={password}
+                        autoCapitalize="none"
+                        keyboardType="email-address"
+                        style={{
+                            backgroundColor: colors.background.secondary,
+                            color: colors.text.disabled,
+                            borderRadius: radius.lg,
+                            paddingHorizontal: 16,
+                            paddingVertical: 14,
+                            borderWidth: 1,
+                            borderColor: validationErrors.password ? 'red' : (colors.border.default || 'transparent')
+                        }}
+                    />
+                    {validationErrors.password && <Text style={{ color: 'red', fontSize: typography.fontSizes.sm, fontWeight: typography.fontWeights.medium }}>{validationErrors.password} </Text>}
+                </View>
+                <View className="mb-5">
+                    <Text style={{ color: colors.text.secondary, fontSize: typography.fontSizes.sm, fontWeight: typography.fontWeights.medium, paddingBottom: 5 }}>Confirm Password *</Text>
+                    <TextInput
+                        placeholder="*******"
+                        placeholderTextColor={colors.text.secondary}
+                        value={cofirm_password}
+                        autoCapitalize="none"
+                        keyboardType="email-address"
+                        style={{
+                            backgroundColor: colors.background.secondary,
+                            color: colors.text.disabled,
+                            borderRadius: radius.lg,
+                            paddingHorizontal: 16,
+                            paddingVertical: 14,
+                            borderWidth: 1,
+                            borderColor: validationErrors.confirm_password ? 'red' : (colors.border.default || 'transparent')
+                        }}
+                    />
+                    {validationErrors.confirm_password && <Text style={{ color: 'red', fontSize: typography.fontSizes.sm, fontWeight: typography.fontWeights.medium }}>{validationErrors.confirm_password} </Text>}
+                </View>
             </View>
 
         </View>
