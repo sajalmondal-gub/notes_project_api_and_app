@@ -75,26 +75,22 @@ class AuthService {
   async refreshTokens(token, reqDetails) {
     try {
       const decoded = jwt.verify(token, config.JWT_REFRESH_SECRET);
-      
-      const sessionResult = await db.query(
-        `SELECT * FROM user_sessions WHERE user_id = $1 AND refresh_token = $2 AND is_revoked = FALSE LIMIT 1`,
-        [decoded.id, decoded.tokenIdentifier]
-      );
-      
-      const session = sessionResult.rows[0];
-      if (!session || new Date() > new Date(session.expires_at)) {
+
+      const sessionResult = userRepository.findSession(decoded);
+      if (!sessionResult || new Date() > new Date(sessionResult.expires_at)) {
         throw new AppError("Session expired or invalid refresh token.", 401);
       }
-
-      // ১. পুরাতন টোকেন রিভোক/ডিলিট করে দেওয়া (টোকেন রোটেশন - সিকিউরিটির জন্য সর্বোচ্চ স্ট্যান্ডার্ড)
-      await db.query(`UPDATE user_sessions SET is_revoked = TRUE WHERE id = $1`, [session.id]);
+      userRepository.revokeSession(sessionResult.id);
 
       // ২. নতুন অ্যাক্সেস এবং রিফ্রেশ টোকেন পেয়ার জেনারেট করা
       const userRow = await userRepository.findById(decoded.id);
       const userModel = new UserModel(userRow);
-      
-      const newAccessToken = this.generateAccessToken(userModel);
-      const newRefreshToken = await this.createUserSession(userModel.id, reqDetails);
+
+      const newAccessToken = this.generateToken(userModel);
+      const newRefreshToken = await this.createUserSession(
+        userModel.id,
+        reqDetails,
+      );
 
       return { newAccessToken, newRefreshToken };
     } catch (err) {
@@ -102,7 +98,12 @@ class AuthService {
     }
   }
 
-
+  async revokeSession(token) {
+    try {
+      const decoded = jwt.verify(token, config.JWT_REFRESH_SECRET);
+      userRepository.revokeSession(decoded);
+    } catch {}
+  }
 
   async processForgotPassword(email) {
     const userRow = await userRepository.findByEmail(email);
@@ -149,7 +150,7 @@ class AuthService {
 
   generateToken(userModel) {
     return jwt.sign({ id: userModel.id }, config.JWT_SECRET, {
-      expiresIn: config.JWT_EXPIRES_IN || "1d",
+      expiresIn: config.JWT_EXPIRES_IN || "15m",
     });
   }
 }

@@ -55,6 +55,11 @@ class UserRepository {
     );
     return sessionResult.rows[0];
   }
+  async revokeSession(sessionId) {
+    await db.query(`UPDATE user_sessions SET is_revoked = TRUE WHERE id = $1`, [
+      sessionId,
+    ]);
+  }
 
   async updateResetToken(id, hashedToken, expiry) {
     const sql = `UPDATE users SET reset_password_token = $1, reset_password_expires = $2 WHERE id = $3`;
