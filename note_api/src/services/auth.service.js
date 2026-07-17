@@ -76,13 +76,11 @@ class AuthService {
     try {
       const decoded = jwt.verify(token, config.JWT_REFRESH_SECRET);
 
-      const sessionResult = userRepository.findSession(decoded);
+      const sessionResult = await userRepository.findSession(decoded);
       if (!sessionResult || new Date() > new Date(sessionResult.expires_at)) {
         throw new AppError("Session expired or invalid refresh token.", 401);
       }
-      userRepository.revokeSession(sessionResult.id);
-
-      // ২. নতুন অ্যাক্সেস এবং রিফ্রেশ টোকেন পেয়ার জেনারেট করা
+      await userRepository.revokeSessionById(sessionResult.id);
       const userRow = await userRepository.findById(decoded.id);
       const userModel = new UserModel(userRow);
 
@@ -101,7 +99,7 @@ class AuthService {
   async revokeSession(token) {
     try {
       const decoded = jwt.verify(token, config.JWT_REFRESH_SECRET);
-      userRepository.revokeSession(decoded);
+     await userRepository.revokeSessionByToken(decoded.id, decoded.tokenIdentifier);
     } catch {}
   }
 
