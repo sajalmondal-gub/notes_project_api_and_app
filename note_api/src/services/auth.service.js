@@ -8,7 +8,29 @@ import config from "../config/env.js";
 import { sendResetMail } from "../utils/mailer.js";
 
 class AuthService {
-  async registerUser(sanitizedData) {
+  async createUserSession(userId, reqDetails) {
+    const { ipAddress, location, userAgent } = reqDetails;
+    const rawRefreshToken = crypto.randomBytes(40).toString("hex");
+    const refreshToken = jwt.sign(
+      { id: userId, tokenIdentifier: rawRefreshToken },
+      config.JWT_REFRESH_SECRET,
+      { expiresIn: config.JWT_REFRESH_EXPIRES_IN },
+    );
+
+    const expiresAt = new Date();
+    expiresAt.setDate(expiresAt.getDate() + 1);
+    await userRepository.createUserSession(
+      userId,
+      rawRefreshToken,
+      ipAddress,
+      location,
+      userAgent,
+      expiresAt,
+    );
+    return refreshToken;
+  }
+
+  async registerUser(sanitizedData, reqDetails) {
     const existingUser = await userRepository.findByEmail(sanitizedData.email);
     if (existingUser) {
       throw new AppError("Email is already registered.", 409);
@@ -23,11 +45,12 @@ class AuthService {
     });
 
     const userModel = new UserModel(newUserRow);
-    const token = this.generateToken(userModel);
-    return { user: userModel.toJSON(), token };
+    const accessToken = this.generateToken(userModel);
+    const refreshToken = await this.createUserSession(userModel.id, reqDetails);
+    return { user: userModel.toJSON(), accessToken, refreshToken };
   }
 
-  async loginUser(sanitizedData) {
+  async loginUser(sanitizedData, reqDetails) {
     const userRow = await userRepository.findByEmail(sanitizedData.email);
     if (!userRow) {
       throw new AppError("Invalid email or password.", 401);
@@ -42,14 +65,48 @@ class AuthService {
     }
     const userModel = new UserModel(userRow);
 
-    const token = this.generateToken(userModel);
+    const accessToken = this.generateToken(userModel);
 
-    return { user: userModel.toJSON(), token };
+    const refreshToken = await this.createUserSession(userModel.id, reqDetails);
+
+    return { user: userModel.toJSON(), accessToken, refreshToken };
   }
+
+  async refreshTokens(token, reqDetails) {
+    try {
+      const decoded = jwt.verify(token, config.JWT_REFRESH_SECRET);
+      
+      const sessionResult = await db.query(
+        `SELECT * FROM user_sessions WHERE user_id = $1 AND refresh_token = $2 AND is_revoked = FALSE LIMIT 1`,
+        [decoded.id, decoded.tokenIdentifier]
+      );
+      
+      const session = sessionResult.rows[0];
+      if (!session || new Date() > new Date(session.expires_at)) {
+        throw new AppError("Session expired or invalid refresh token.", 401);
+      }
+
+      // ১. পুরাতন টোকেন রিভোক/ডিলিট করে দেওয়া (টোকেন রোটেশন - সিকিউরিটির জন্য সর্বোচ্চ স্ট্যান্ডার্ড)
+      await db.query(`UPDATE user_sessions SET is_revoked = TRUE WHERE id = $1`, [session.id]);
+
+      // ২. নতুন অ্যাক্সেস এবং রিফ্রেশ টোকেন পেয়ার জেনারেট করা
+      const userRow = await userRepository.findById(decoded.id);
+      const userModel = new UserModel(userRow);
+      
+      const newAccessToken = this.generateAccessToken(userModel);
+      const newRefreshToken = await this.createUserSession(userModel.id, reqDetails);
+
+      return { newAccessToken, newRefreshToken };
+    } catch (err) {
+      throw new AppError("Invalid or expired refresh token.", 401);
+    }
+  }
+
+
 
   async processForgotPassword(email) {
     const userRow = await userRepository.findByEmail(email);
-    
+
     if (!userRow) {
       throw new AppError("No account found with this email.", 404);
     }

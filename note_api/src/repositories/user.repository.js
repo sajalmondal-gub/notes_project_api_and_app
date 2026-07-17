@@ -28,6 +28,34 @@ class UserRepository {
     return result.rows[0];
   }
 
+  async createUserSession(
+    userId,
+    rawRefreshToken,
+    ipAddress,
+    location,
+    userAgent,
+    expiresAt,
+  ) {
+    const sql = `INSERT INTO user_sessions (user_id,refresh_token,ip_address,location,user_agent,expires_at) VALUES ($1, $2, $3, $4, $5, $6)`;
+    await db.query(sql, [
+      userId,
+      rawRefreshToken,
+      ipAddress,
+      location,
+      userAgent,
+      expiresAt,
+    ]);
+    return true;
+  }
+
+  async findSession(decoded) {
+    const sessionResult = await db.query(
+      `SELECT * FROM user_sessions WHERE user_id = $1 AND refresh_token = $2 AND is_revoked = FALSE LIMIT 1`,
+      [decoded.id, decoded.tokenIdentifier],
+    );
+    return sessionResult.rows[0];
+  }
+
   async updateResetToken(id, hashedToken, expiry) {
     const sql = `UPDATE users SET reset_password_token = $1, reset_password_expires = $2 WHERE id = $3`;
     await db.query(sql, [hashedToken, expiry, id]);

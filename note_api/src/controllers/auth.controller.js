@@ -11,6 +11,7 @@ const setAuthCookie = (res, token) => {
 };
 
 class AuthController {
+
   // regiseter
   register = async (req, res) => {
     const validatedData = authValidator.validateRegister(req.body);
