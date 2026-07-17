@@ -21,13 +21,13 @@ export const LoginScreen: React.FC<Props> = ({ navigation }) => {
     const [email, setEmail] = useState<string>('');
     const [password, setPassword] = useState<string>('');
     const { login, authLoading, authError } = useAuth();
-    const [validationErrors, setValidationErrors] = useState<{email?: string, password?: string}>({});
+    const [validationErrors, setValidationErrors] = useState<{ email?: string, password?: string }>({});
 
     const handleAuthenticationWorkflow = async () => {
-        const errors: {email?: string, password?: string} = {};
+        const errors: { email?: string, password?: string } = {};
         if (!email) errors.email = 'Email is required';
         if (!password) errors.password = 'Password is required';
-        
+
         setValidationErrors(errors);
         if (Object.keys(errors).length > 0) return;
 
@@ -46,18 +46,18 @@ export const LoginScreen: React.FC<Props> = ({ navigation }) => {
                     style={{ height: 150, width: 150 }}
                 />
             </Animated.View>
-            <Animated.View entering={FadeInDown.duration(1000).delay(600)} className="items-center justify-center px-5">
+            <View  className="items-center justify-center px-5">
                 <Text style={{ color: colors.text.primary, fontSize: typography.fontSizes["3xl"], fontWeight: typography.fontWeights.extrabold }}>Welcome Back!</Text>
                 <Text className="text-center" style={{ color: colors.text.brand, fontSize: typography.fontSizes.lg }}>Your distraction-free space for deep creative work</Text>
-            </Animated.View>
-            <Animated.View entering={FadeInDown.duration(1000).delay(800)} className="w-full px-5 mt-10">
+            </View>
+            <View  className="w-full px-5 mt-10">
                 <View className="mb-4">
                     <Text style={{ color: colors.text.secondary, fontSize: typography.fontSizes.sm, marginBottom: 8, fontWeight: typography.fontWeights.medium }}>Email Address</Text>
                     <TextInput
                         placeholder="Enter your email"
                         placeholderTextColor={colors.text.disabled}
                         value={email}
-                        onChangeText={(text) => { setEmail(text); setValidationErrors(prev => ({...prev, email: undefined})) }}
+                        onChangeText={(text) => { setEmail(text); setValidationErrors(prev => ({ ...prev, email: undefined })) }}
                         autoCapitalize="none"
                         keyboardType="email-address"
                         style={{
@@ -81,7 +81,7 @@ export const LoginScreen: React.FC<Props> = ({ navigation }) => {
                         placeholderTextColor={colors.text.disabled}
                         secureTextEntry
                         value={password}
-                        onChangeText={(text) => { setPassword(text); setValidationErrors(prev => ({...prev, password: undefined})) }}
+                        onChangeText={(text) => { setPassword(text); setValidationErrors(prev => ({ ...prev, password: undefined })) }}
                         style={{
                             backgroundColor: colors.background.secondary,
                             color: colors.text.primary,
@@ -139,7 +139,7 @@ export const LoginScreen: React.FC<Props> = ({ navigation }) => {
 
                 <View className="flex-row justify-center mt-2">
                     <Text style={{ color: colors.text.secondary, fontSize: typography.fontSizes.sm }}>Don't have an account? </Text>
-                    <TouchableOpacity onPress={() => { }}>
+                    <TouchableOpacity onPress={() => { navigation.navigate('Register') }}>
                         <Text style={{ color: colors.text.brand, fontSize: typography.fontSizes.sm, fontWeight: typography.fontWeights.bold }}>Sign Up</Text>
                     </TouchableOpacity>
                 </View>
@@ -150,7 +150,7 @@ export const LoginScreen: React.FC<Props> = ({ navigation }) => {
                         <Text style={{ color: colors.text.brand, fontWeight: typography.fontWeights.semibold }}>Terms of Service</Text> and <Text style={{ color: colors.text.brand, fontWeight: typography.fontWeights.semibold }}>Privacy Policy</Text>
                     </Text>
                 </View>
-            </Animated.View>
+            </View>
         </View>
     );
 }
