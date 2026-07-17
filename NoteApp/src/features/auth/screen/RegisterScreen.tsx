@@ -71,8 +71,7 @@ export const RegisterScreen: React.FC<Props> = ({ navigation }) => {
                         placeholder="*******"
                         placeholderTextColor={colors.text.secondary}
                         value={password}
-                        autoCapitalize="none"
-                        keyboardType="email-address"
+                        secureTextEntry
                         style={{
                             backgroundColor: colors.background.secondary,
                             color: colors.text.disabled,
@@ -91,8 +90,8 @@ export const RegisterScreen: React.FC<Props> = ({ navigation }) => {
                         placeholder="*******"
                         placeholderTextColor={colors.text.secondary}
                         value={cofirm_password}
-                        autoCapitalize="none"
-                        keyboardType="email-address"
+                        secureTextEntry
+
                         style={{
                             backgroundColor: colors.background.secondary,
                             color: colors.text.disabled,
