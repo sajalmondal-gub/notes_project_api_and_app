@@ -1,6 +1,7 @@
 import React from 'react';
 import { Pressable, Text, View } from 'react-native';
 import { useTheme } from '../theme';
+import Ionicons from '@react-native-vector-icons/ionicons';
 
 interface Propos {
     label: string;
@@ -32,15 +33,9 @@ const Checkbox: React.FC<Propos> = ({ label, isChecked, onPress, error }) => {
                     }}
                 >
                     {isChecked && (
-                        <Text
-                            style={{
-                                color: colors.text.secondary,
-                                fontSize: typography.fontSizes.sm,
-                                fontWeight: typography.fontWeights.bold,
-                            }}
-                        >
-                            ✓
-                        </Text>
+
+                        <Ionicons name="checkmark" size={16} style={{ color: colors.text.secondary }} />
+
                     )}
                 </View>
 
