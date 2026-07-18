@@ -1,34 +1,69 @@
-import React from "react";
-import { Pressable, Text, View } from "react-native";
-import { useTheme } from "../theme";
+import React from 'react';
+import { Pressable, Text, View } from 'react-native';
+import { useTheme } from '../theme';
 
 interface Propos {
-    label: string,
-    isChecked: boolean,
-    onPress: () => void,
-    error?: string,
+    label: string;
+    isChecked: boolean;
+    onPress: () => void;
+    error?: string;
 }
 
 const Checkbox: React.FC<Propos> = ({ label, isChecked, onPress, error }) => {
     const { colors, typography, radius } = useTheme();
     return (
-        <Pressable className="flex-row items-center justify-center my-10" onPress={onPress} >
-            <View className="w-24 h-24 text-center items-center -jusitfy-center" style={{
-                borderRadius: radius.lg,
-                borderWidth: 2,
-                borderColor:error?'red' :(colors.border.default||'transparent')
+        <View className="mb-2">
+            <Pressable
+                className="flex-row items-center p-4 active:opacity-70"
+                onPress={onPress}
+            >
+                <View
+                    className="w-6 h-6 justify-center items-center mr-3"
+                    style={{
+                        borderRadius: radius.md || 4,
+                        borderWidth: 2,
+                        borderColor: error
+                            ? 'red'
+                            : isChecked
+                                ? colors.primary?.default
+                                : colors.border.default,
+                        backgroundColor: isChecked
+                            ? colors.primary?.default : 'transparent',
+                    }}
+                >
+                    {isChecked && (
+                        <Text
+                            style={{
+                                color: colors.text.secondary,
+                                fontSize: typography.fontSizes.sm,
+                                fontWeight: typography.fontWeights.bold,
+                            }}
+                        >
+                            ✓
+                        </Text>
+                    )}
+                </View>
 
-
-            }}>
-                {isChecked && (
-                    <View></View>
-                )}
                 {label && (
-                    <Text></Text>
+                    <Text
+                        className="flex-1"
+                        style={{
+                            color: colors.text.secondary,
+                            fontSize: typography.fontSizes.xs,
+                        }}
+                    >
+                        {label}
+                    </Text>
                 )}
-            </View>
+            </Pressable>
 
-        </Pressable>
+            {error && (
+                <Text className="text-red-500 text-xs mt-1 ml-14">
+                    {error}
+                </Text>
+            )}
+        </View>
     );
-}
+};
+
 export default Checkbox;
