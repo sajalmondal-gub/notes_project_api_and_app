@@ -4,6 +4,7 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { AuthStackParamList } from "../../../types";
 import { useTheme } from "../../../theme";
 import Animated, { FadeIn } from "react-native-reanimated";
+import Checkbox from "../../../components/CheckBox";
 type RegisterNavigationProps = NativeStackNavigationProp<AuthStackParamList, 'Register'>
 interface Props {
     navigation: RegisterNavigationProps
@@ -15,7 +16,8 @@ export const RegisterScreen: React.FC<Props> = ({ navigation }) => {
     const [email, setEmail] = useState<string>('');
     const [password, setPassword] = useState<string>('');
     const [cofirm_password, setCofirmPassword] = useState<string>('');
-    const [validationErrors, setValidationErrors] = useState<{ full_name?: string, email?: string, password?: string, confirm_password?: string }>({});
+    const [checked, setChecked] = useState<boolean>(false);
+    const [validationErrors, setValidationErrors] = useState<{ full_name?: string, email?: string, password?: string, confirm_password?: string, checked?: string }>({});
     return (
 
         <View className="flex-1 justify-center items-center px-5" style={{ backgroundColor: colors.background.primary }}>
@@ -103,6 +105,9 @@ export const RegisterScreen: React.FC<Props> = ({ navigation }) => {
                         }}
                     />
                     {validationErrors.confirm_password && <Text style={{ color: 'red', fontSize: typography.fontSizes.sm, fontWeight: typography.fontWeights.medium }}>{validationErrors.confirm_password} </Text>}
+                </View>
+                <View className="mb-5">
+                    <Checkbox label="I agree to The Terms Of Service and Privacy Policy" isChecked={checked} onPress={() => setChecked(!checked)} error={validationErrors.checked} />
                 </View>
             </View>
 
