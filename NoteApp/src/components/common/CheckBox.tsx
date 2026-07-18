@@ -1,6 +1,6 @@
 import React from 'react';
 import { Pressable, Text, View } from 'react-native';
-import { useTheme } from '../theme';
+import { useTheme } from '../../theme';
 import Ionicons from '@react-native-vector-icons/ionicons';
 
 interface Propos {

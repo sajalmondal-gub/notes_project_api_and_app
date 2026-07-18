@@ -4,7 +4,7 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { AuthStackParamList } from "../../../types";
 import { useTheme } from "../../../theme";
 import Animated, { FadeIn } from "react-native-reanimated";
-import Checkbox from "../../../components/CheckBox";
+import Checkbox from "../../../components/common/CheckBox";
 type RegisterNavigationProps = NativeStackNavigationProp<AuthStackParamList, 'Register'>
 interface Props {
     navigation: RegisterNavigationProps
