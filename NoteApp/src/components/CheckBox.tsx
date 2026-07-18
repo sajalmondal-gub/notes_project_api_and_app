@@ -34,7 +34,7 @@ const Checkbox: React.FC<Propos> = ({ label, isChecked, onPress, error }) => {
                 >
                     {isChecked && (
 
-                        <Ionicons name="checkmark" size={16} style={{ color: colors.text.secondary }} />
+                        <Ionicons name="checkmark" size={16} style={{ color: colors.text.secondary, fontWeight: typography.fontWeights.extrabold }} />
 
                     )}
                 </View>
