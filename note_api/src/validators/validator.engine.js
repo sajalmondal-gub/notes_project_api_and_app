@@ -13,6 +13,7 @@ class ValidatorEngine {
 
       for (const rule of fieldRules) {
         const [ruleName, ruleValue] = rule.split(":");
+        let fieldHasError = false;
 
         switch (ruleName) {
           case "required":
@@ -21,7 +22,7 @@ class ValidatorEngine {
                 field,
                 message: `${this.label(field)} is required`,
               });
-              break;
+              // break;
             }
             continue;
 
@@ -106,7 +107,7 @@ class ValidatorEngine {
             continue;
         }
 
-        if (errors.some((error) => error.field === field)) {
+        if (fieldHasError) {
           break;
         }
       }
