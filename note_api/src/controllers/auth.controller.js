@@ -76,15 +76,12 @@ class AuthController {
   };
 
   forgotPassword = async (req, res) => {
-    const { email } = req.body;
-    if (!email) {
-      return res.sendJSON(400, {
-        success: false,
-        message: "Email is required.",
-      });
-    }
-    const resetUrl = await authService.processForgotPassword(email);
-    console.log(`✉️ Email Sent: ${resetUrl}`);
+    const validateData = authValidator.validateForgotPassword(req.body);
+
+    const resetUrl = await authService.processForgotPassword(
+      validateData.email,
+    );
+    console.log(`Email Sent: ${resetUrl}`);
     res.sendJSON(200, {
       success: true,
       message: "Password reset link sent to email.",

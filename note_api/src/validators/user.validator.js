@@ -17,17 +17,23 @@ class UserValidator {
   }
 
   static validateUpdate(body) {
-    
     return ValidatorEngine.validate(body, {
       name: "min:3|max:30",
       email: "email|max:150",
       password: "min:6|max:100",
     });
   }
+
   static validateLogin(body) {
     return ValidatorEngine.validate(body, {
       email: "required|email",
       password: "required",
+    });
+  }
+
+  static forgotPassword(body) {
+    return ValidatorEngine.validate(body, {
+      email: "required|email",
     });
   }
 }

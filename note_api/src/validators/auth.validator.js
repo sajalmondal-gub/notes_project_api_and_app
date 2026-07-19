@@ -17,12 +17,24 @@ class AuthValidator {
   }
   static validateLogin(body) {
     const rules = {
-      email: "required|max:150",
+      email: "required|email",
       password: "required|min:6|max:100",
     };
     const result = ValidatorEngine.validate(body, rules);
     if (!result.isValid) {
       throw new AppError("Validation Failed", 400, result.errors);
+    }
+    return result.data;
+  }
+
+  static validateForgotPassword(body) {
+    const rules = {
+      email: "required|email",
+    };
+    const result = ValidatorEngine.validate(body, rules);
+    console.log(result);
+    if (!result.isValid) {
+      throw new AppError("Validation Faild", 400, result.errors);
     }
     return result.data;
   }
