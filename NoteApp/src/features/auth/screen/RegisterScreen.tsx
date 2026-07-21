@@ -19,7 +19,10 @@ export const RegisterScreen: React.FC<Props> = ({ navigation }) => {
     const [password, setPassword] = useState<string>('');
     const [cofirm_password, setCofirmPassword] = useState<string>('');
     const [checked, setChecked] = useState<boolean>(false);
+    const [loading, setLoading] = useState<boolean>(false);
     const [validationErrors, setValidationErrors] = useState<{ full_name?: string, email?: string, password?: string, confirm_password?: string, checked?: string }>({});
+ 
+ 
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: colors.background.primary }} >
             <StatusBar
@@ -38,10 +41,10 @@ export const RegisterScreen: React.FC<Props> = ({ navigation }) => {
                         <Animated.Image entering={FadeIn.duration(500).delay(100)} source={require('../../../assets/logo/note_logo.png')} style={{ height: 150, width: 150 }} />
                         <View className="items-center justify-center">
                             <Text style={{ color: colors.text.primary, fontSize: typography.fontSizes["2xl"], fontWeight: typography.fontWeights.bold }}>Create your Account</Text>
-                            <Text className="text-center" style={{ color: colors.text.brand, fontSize: typography.fontSizes.lg, fontWeight: typography.fontWeights.normal }}>Join high-output professionals in a space design for clarity and deep work</Text>
+                            <Text className="text-center" style={{ color: colors.text.brand, fontSize: typography.fontSizes.sm, fontWeight: typography.fontWeights.semibold }}>Join high-output professionals in a space design for clarity and deep work</Text>
                         </View>
 
-                        <Animated.View entering={FadeInDown.duration(500).delay(100)} className="w-full mt-10">
+                        <View className="w-full mt-10">
                             <View className="mb-5">
                                 <Text style={{ color: colors.text.secondary, fontSize: typography.fontSizes.sm, fontWeight: typography.fontWeights.medium, paddingBottom: 5 }}>Full Name *</Text>
                                 <TextInput
@@ -141,18 +144,20 @@ export const RegisterScreen: React.FC<Props> = ({ navigation }) => {
                                 <Checkbox label="I agree to The Terms Of Service and Privacy Policy" isChecked={checked} onPress={() => setChecked(!checked)} error={validationErrors.checked} />
                             </View>
 
-                            <TouchableOpacity style={{
-                                backgroundColor: colors.border.default,
-                                paddingVertical: 16,
-                                borderRadius: radius.lg,
-                                alignItems: "center",
-                                marginTop: 8,
-                                shadowColor: colors.text.brand,
-                                shadowOffset: { width: 0, height: 4 },
-                                shadowOpacity: 0.3,
-                                shadowRadius: 4,
-                                elevation: 5,
-                            }}>
+                            <TouchableOpacity
+                                disabled={loading}
+                                style={{
+                                    backgroundColor: loading ? colors.border.default : colors.text.brand,
+                                    paddingVertical: 16,
+                                    borderRadius: radius.lg,
+                                    alignItems: "center",
+                                    marginTop: 8,
+                                    shadowColor: colors.text.brand,
+                                    shadowOffset: { width: 0, height: 4 },
+                                    shadowOpacity: 0.3,
+                                    shadowRadius: 4,
+                                    elevation: 5,
+                                }}>
                                 <Text style={{ color: colors.text.primary, fontSize: typography.fontSizes.lg, fontWeight: typography.fontWeights.bold }}>Sign Up</Text>
                             </TouchableOpacity>
 
@@ -184,7 +189,7 @@ export const RegisterScreen: React.FC<Props> = ({ navigation }) => {
                                     <Text style={{ color: colors.text.brand, fontWeight: typography.fontWeights.semibold }}>Terms of Service</Text> and <Text style={{ color: colors.text.brand, fontWeight: typography.fontWeights.semibold }}>Privacy Policy</Text>
                                 </Text>
                             </View>
-                        </Animated.View>
+                        </View>
                     </View>
                 </ScrollView>
             </KeyboardAvoidingView>
