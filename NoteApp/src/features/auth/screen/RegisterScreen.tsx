@@ -5,6 +5,7 @@ import { AuthStackParamList } from "../../../types";
 import { useTheme } from "../../../theme";
 import Animated, { FadeIn } from "react-native-reanimated";
 import Checkbox from "../../../components/common/CheckBox";
+import Icon from "@react-native-vector-icons/ionicons";
 type RegisterNavigationProps = NativeStackNavigationProp<AuthStackParamList, 'Register'>
 interface Props {
     navigation: RegisterNavigationProps
@@ -135,10 +136,28 @@ export const RegisterScreen: React.FC<Props> = ({ navigation }) => {
                         <TouchableOpacity onPress={() => { navigation.navigate('Login') }}><Text style={{ color: colors.text.brand, fontWeight: typography.fontWeights.bold, fontSize: typography.fontSizes.sm }}>Back to Login</Text></TouchableOpacity>
                     </View>
 
-                    <View className="flex-row justify-between mb-6 mt-8">
-                        <View className="flex-1 h-[1px]"style={{backgroundColor:colors.border.default}}/>
-                        <Text style={{color:colors.text.secondary}}>or Continue with</Text>
-                         <View className="flex-1 h-[1px]"style={{backgroundColor:colors.border.default}}/>
+                    <View className="flex-row items-center mb-6 mt-8">
+                        <View className="flex-1 h-[1px]" style={{ backgroundColor: colors.border.default }} />
+                        <Text style={{ color: colors.text.secondary, fontSize: typography.fontSizes.sm, paddingHorizontal: 16 }}>or Continue with</Text>
+                        <View className="flex-1 h-[1px]" style={{ backgroundColor: colors.border.default }} />
+                    </View>
+                    <View className="flex-row items-center justify-between mb-8">
+                        <TouchableOpacity style={{ flex: 1, backgroundColor: colors.background.secondary, padding: 14, borderRadius: radius.xl, alignItems: "center", borderWidth: 1, borderColor: colors.border.default, marginRight: 8 }}>
+                            <Icon name="logo-google" size={24} color={colors.text.primary} />
+                        </TouchableOpacity>
+                        <TouchableOpacity style={{ flex: 1, backgroundColor: colors.background.secondary, padding: 14, borderRadius: radius.xl, alignItems: "center", borderWidth: 1, borderColor: colors.border.default, marginHorizontal: 4 }}>
+                            <Icon name="logo-facebook" size={24} color="#1877F2" />
+                        </TouchableOpacity>
+                        <TouchableOpacity style={{ flex: 1, backgroundColor: colors.background.secondary, padding: 14, alignItems: "center", borderRadius: radius.xl, borderWidth: 1, borderColor: colors.border.default, marginLeft: 8 }} >
+                            <Icon name="logo-apple" size={24} color={colors.text.primary} />
+                        </TouchableOpacity>
+                    </View>
+
+                    <View className="items-center mt-8 mb-4">
+                        <Text className="text-center leading-6" style={{ color: colors.text.secondary, fontSize: typography.fontSizes.xs }}>
+                            By logging in, you agree to our{" "}
+                            <Text style={{ color: colors.text.brand, fontWeight: typography.fontWeights.semibold }}>Terms of Service</Text> and <Text style={{ color: colors.text.brand, fontWeight: typography.fontWeights.semibold }}>Privacy Policy</Text>
+                        </Text>
                     </View>
                 </View>
             </View>
