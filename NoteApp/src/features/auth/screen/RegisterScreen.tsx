@@ -134,6 +134,12 @@ export const RegisterScreen: React.FC<Props> = ({ navigation }) => {
                         <Text style={{ color: colors.text.secondary, fontSize: typography.fontSizes.sm }}>Already have an account?{" "} </Text>
                         <TouchableOpacity onPress={() => { navigation.navigate('Login') }}><Text style={{ color: colors.text.brand, fontWeight: typography.fontWeights.bold, fontSize: typography.fontSizes.sm }}>Back to Login</Text></TouchableOpacity>
                     </View>
+
+                    <View className="flex-row justify-between mb-6 mt-8">
+                        <View className="flex-1 h-[1px]"style={{backgroundColor:colors.border.default}}/>
+                        <Text style={{color:colors.text.secondary}}>or Continue with</Text>
+                         <View className="flex-1 h-[1px]"style={{backgroundColor:colors.border.default}}/>
+                    </View>
                 </View>
             </View>
         </ScrollView>
