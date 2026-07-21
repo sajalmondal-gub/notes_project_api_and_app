@@ -3,7 +3,7 @@ import { KeyboardAvoidingView, Platform, ScrollView, StatusBar, Text, TextInput,
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { AuthStackParamList } from "../../../types";
 import { useTheme } from "../../../theme";
-import Animated, { FadeIn } from "react-native-reanimated";
+import Animated, { FadeIn, FadeInDown } from "react-native-reanimated";
 import Checkbox from "../../../components/common/CheckBox";
 import Icon from "@react-native-vector-icons/ionicons";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -41,7 +41,7 @@ export const RegisterScreen: React.FC<Props> = ({ navigation }) => {
                             <Text className="text-center" style={{ color: colors.text.brand, fontSize: typography.fontSizes.lg, fontWeight: typography.fontWeights.normal }}>Join high-output professionals in a space design for clarity and deep work</Text>
                         </View>
 
-                        <View className="w-full mt-10">
+                        <Animated.View entering={FadeInDown.duration(500).delay(100)} className="w-full mt-10">
                             <View className="mb-5">
                                 <Text style={{ color: colors.text.secondary, fontSize: typography.fontSizes.sm, fontWeight: typography.fontWeights.medium, paddingBottom: 5 }}>Full Name *</Text>
                                 <TextInput
@@ -57,6 +57,10 @@ export const RegisterScreen: React.FC<Props> = ({ navigation }) => {
                                         paddingVertical: 14,
                                         borderWidth: 1,
                                         borderColor: validationErrors.full_name ? 'red' : (colors.border.default || 'transparent')
+                                    }}
+                                    onChangeText={(text) => {
+                                        setFullName(text);
+                                        setValidationErrors((prev) => ({ ...prev, full_name: undefined }));
                                     }}
 
                                 />
@@ -79,6 +83,10 @@ export const RegisterScreen: React.FC<Props> = ({ navigation }) => {
                                         borderWidth: 1,
                                         borderColor: validationErrors.email ? 'red' : (colors.border.default || 'transparent')
                                     }}
+                                    onChangeText={(text) => {
+                                        setEmail(text);
+                                        setValidationErrors(prev => ({ ...prev, email: undefined }));
+                                    }}
                                 />
                                 {validationErrors.email && <Text style={{ color: 'red', fontSize: typography.fontSizes.sm, fontWeight: typography.fontWeights.medium }}>{validationErrors.email} </Text>}
                             </View>
@@ -98,6 +106,10 @@ export const RegisterScreen: React.FC<Props> = ({ navigation }) => {
                                         borderWidth: 1,
                                         borderColor: validationErrors.password ? 'red' : (colors.border.default || 'transparent')
                                     }}
+                                    onChangeText={(text) => {
+                                        setPassword(text);
+                                        setValidationErrors(prev => ({ ...prev, password: undefined }));
+                                    }}
                                 />
                                 {validationErrors.password && <Text style={{ color: 'red', fontSize: typography.fontSizes.sm, fontWeight: typography.fontWeights.medium }}>{validationErrors.password} </Text>}
                             </View>
@@ -108,6 +120,10 @@ export const RegisterScreen: React.FC<Props> = ({ navigation }) => {
                                     placeholderTextColor={colors.text.secondary}
                                     value={cofirm_password}
                                     secureTextEntry
+                                    onChangeText={(text) => {
+                                        setCofirmPassword(text);
+                                        setValidationErrors(prev => ({ ...prev, confirm_password: undefined }));
+                                    }}
 
                                     style={{
                                         backgroundColor: colors.background.secondary,
@@ -168,7 +184,7 @@ export const RegisterScreen: React.FC<Props> = ({ navigation }) => {
                                     <Text style={{ color: colors.text.brand, fontWeight: typography.fontWeights.semibold }}>Terms of Service</Text> and <Text style={{ color: colors.text.brand, fontWeight: typography.fontWeights.semibold }}>Privacy Policy</Text>
                                 </Text>
                             </View>
-                        </View>
+                        </Animated.View>
                     </View>
                 </ScrollView>
             </KeyboardAvoidingView>
