@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Text, TextInput, View } from "react-native";
+import { Text, TextInput, TouchableOpacity, View } from "react-native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { AuthStackParamList } from "../../../types";
 import { useTheme } from "../../../theme";
@@ -109,6 +109,21 @@ export const RegisterScreen: React.FC<Props> = ({ navigation }) => {
                 <View className="mb-5">
                     <Checkbox label="I agree to The Terms Of Service and Privacy Policy" isChecked={checked} onPress={() => setChecked(!checked)} error={validationErrors.checked} />
                 </View>
+
+                <TouchableOpacity style={{
+                    backgroundColor: colors.border.default,
+                    paddingVertical: 16,
+                    borderRadius: radius.lg,
+                    alignItems: "center",
+                    marginTop: 8,
+                    shadowColor: colors.text.brand,
+                    shadowOffset: { width: 0, height: 4 },
+                    shadowOpacity: 0.3,
+                    shadowRadius: 4,
+                    elevation: 5,
+                }}>
+                    <Text style={{ color: colors.text.primary, fontSize: typography.fontSizes.lg, fontWeight: typography.fontWeights.bold }}>Sign Up</Text>
+                </TouchableOpacity>
             </View>
 
         </View>

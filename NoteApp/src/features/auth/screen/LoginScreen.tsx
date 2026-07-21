@@ -46,11 +46,11 @@ export const LoginScreen: React.FC<Props> = ({ navigation }) => {
                     style={{ height: 150, width: 150 }}
                 />
             </Animated.View>
-            <View  className="items-center justify-center px-5">
+            <View className="items-center justify-center px-5">
                 <Text style={{ color: colors.text.primary, fontSize: typography.fontSizes["3xl"], fontWeight: typography.fontWeights.extrabold }}>Welcome Back!</Text>
                 <Text className="text-center" style={{ color: colors.text.brand, fontSize: typography.fontSizes.lg }}>Your distraction-free space for deep creative work</Text>
             </View>
-            <View  className="w-full px-5 mt-10">
+            <View className="w-full px-5 mt-10">
                 <View className="mb-4">
                     <Text style={{ color: colors.text.secondary, fontSize: typography.fontSizes.sm, marginBottom: 8, fontWeight: typography.fontWeights.medium }}>Email Address</Text>
                     <TextInput
