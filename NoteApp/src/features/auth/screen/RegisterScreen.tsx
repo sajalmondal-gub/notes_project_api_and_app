@@ -46,8 +46,8 @@ export const RegisterScreen: React.FC<Props> = ({ navigation }) => {
         if (Object.keys(errors).length > 0) return;
         try {
             await register({ full_name, email, password, confirm_password });
-        } catch (error) {
-
+        } catch (error: any) {
+            console.log('Registeration failed : ', error.message);
         }
 
     }
