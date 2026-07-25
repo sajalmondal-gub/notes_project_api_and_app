@@ -17,14 +17,32 @@ export const RegisterScreen: React.FC<Props> = ({ navigation }) => {
     const [full_name, setFullName] = useState<string>('');
     const [email, setEmail] = useState<string>('');
     const [password, setPassword] = useState<string>('');
-    const [cofirm_password, setCofirmPassword] = useState<string>('');
+    const [confirm_password, setCofirmPassword] = useState<string>('');
     const [checked, setChecked] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(false);
     const [validationErrors, setValidationErrors] = useState<{ full_name?: string, email?: string, password?: string, confirm_password?: string, checked?: string }>({});
 
     const hadnleSignUpWorkFlow = async () => {
         const errors: { full_name?: string, email?: string, password?: string, confirm_password?: string } = {}
-        if(!full_name) errors.full_name=
+        if (!full_name) errors.full_name = 'Name is required';
+        if (!email) {
+            errors.email = 'Email is required';
+        } else {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) errors.email = 'Please enter a valid email address';
+        }
+
+        if (!password) errors.password = 'Password is required';
+
+        if (!confirm_password) {
+            errors.confirm_password = 'Confirm Password is required';
+        } else if (password && password !== confirm_password) {
+            errors.confirm_password = 'Passwords do not match';
+        }
+        setValidationErrors(errors);
+
+        if (Object.keys(errors).length > 0) return;
+
     }
 
     return (
@@ -125,7 +143,7 @@ export const RegisterScreen: React.FC<Props> = ({ navigation }) => {
                                 <TextInput
                                     placeholder="*******"
                                     placeholderTextColor={colors.text.secondary}
-                                    value={cofirm_password}
+                                    value={confirm_password}
                                     secureTextEntry
                                     onChangeText={(text) => {
                                         setCofirmPassword(text);
