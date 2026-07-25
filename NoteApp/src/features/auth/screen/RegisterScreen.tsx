@@ -21,8 +21,12 @@ export const RegisterScreen: React.FC<Props> = ({ navigation }) => {
     const [checked, setChecked] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(false);
     const [validationErrors, setValidationErrors] = useState<{ full_name?: string, email?: string, password?: string, confirm_password?: string, checked?: string }>({});
- 
- 
+
+    const hadnleSignUpWorkFlow = async () => {
+        const errors: { full_name?: string, email?: string, password?: string, confirm_password?: string } = {}
+        if(!full_name) errors.full_name=
+    }
+
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: colors.background.primary }} >
             <StatusBar
