@@ -7,6 +7,7 @@ import Animated, { FadeIn, FadeInDown } from "react-native-reanimated";
 import Checkbox from "../../../components/common/CheckBox";
 import Icon from "@react-native-vector-icons/ionicons";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useAuth } from "../../../hooks/useAuth";
 type RegisterNavigationProps = NativeStackNavigationProp<AuthStackParamList, 'Register'>
 interface Props {
     navigation: RegisterNavigationProps
@@ -14,6 +15,7 @@ interface Props {
 
 export const RegisterScreen: React.FC<Props> = ({ navigation }) => {
     const { colors, typography, radius, isDark } = useTheme();
+    const { register, authLoading, authError } = useAuth();
     const [full_name, setFullName] = useState<string>('');
     const [email, setEmail] = useState<string>('');
     const [password, setPassword] = useState<string>('');
@@ -42,6 +44,11 @@ export const RegisterScreen: React.FC<Props> = ({ navigation }) => {
         setValidationErrors(errors);
 
         if (Object.keys(errors).length > 0) return;
+        try {
+            await register({ full_name, email, password, confirm_password });
+        } catch (error) {
+
+        }
 
     }
 

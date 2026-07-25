@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { authApiService } from '../features/auth/authService';
-import { LoginRequestPayload } from '../features/auth/types';
+import { LoginRequestPayload, RegisterRequestPayload } from '../features/auth/types';
 
 export interface AuthUserState {
   id: string;
@@ -15,6 +15,7 @@ interface AuthContextType {
   authLoading: boolean;
   authError: string | null;
   login: (credentials: LoginRequestPayload) => Promise<void>;
+  register: (info: RegisterRequestPayload) => Promise<void>;
   logout: () => Promise<void>;
 }
 
@@ -70,6 +71,27 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
+  const register = async (info: RegisterRequestPayload): Promise<void> => {
+    setAuthLoading(true);
+    setAuthError(null);
+    try {
+      const apiResult = await authApiService.register(info);
+      if (apiResult.success && apiResult.data.token) {
+        await AsyncStorage.setItem('user_token', apiResult.data.token);
+        await AsyncStorage.setItem('refresh_token', apiResult.data.refreshToken);
+        setIsAuthenticated(true);
+      } else {
+        throw new Error(apiResult.message || 'Registration failed');
+      }
+    } catch (networkError: any) {
+      const parsedError = networkError?.response?.data?.message || networkError.message || 'Registration failed';
+      setAuthError(parsedError);
+      throw new Error(parsedError);
+    } finally {
+      setAuthLoading(false);
+    }
+  }
+
   const logout = async (): Promise<void> => {
     try {
       await AsyncStorage.removeItem('user_token');
@@ -87,6 +109,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         authLoading,
         authError,
         login,
+        register,
         logout,
       }}
     >
