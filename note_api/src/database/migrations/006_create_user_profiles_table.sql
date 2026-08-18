@@ -5,7 +5,6 @@ CREATE TABLE IF NOT EXISTS user_profiles(
     phone_number VARCHAR(50) NOT NULL UNIQUE,
     profile_image VARCHAR(255) NULL,
     address VARCHAR(255) NULL,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    CONSTRAINT unique_user_profile UNIQUE(user_id)
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 CREATE INDEX idx_user_profiles ON user_profiles(user_id);

@@ -10,4 +10,5 @@ CREATE TABLE IF NOT EXISTS user_sessions(
     is_revoked BOOLEAN DEFAULT FALSE,
     expires_at TIMESTAMP NOT NULL,
     logged_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-)
+);
+CREATE INDEX idx_sessions_user_id ON user_sessions(user_id);

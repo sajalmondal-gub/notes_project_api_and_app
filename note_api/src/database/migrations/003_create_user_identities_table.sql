@@ -6,6 +6,6 @@ CREATE TABLE IF NOT EXISTS user_identities(
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT unique_provider_account UNIQUE(provider,provider_id),
-    CONSTRAINT unique_user_provider UNIQUE(user_id, provider),
+    CONSTRAINT unique_user_provider UNIQUE(user_id, provider)
 );
 CREATE INDEX idx_identities_provider ON user_identities(provider,provider_id);
