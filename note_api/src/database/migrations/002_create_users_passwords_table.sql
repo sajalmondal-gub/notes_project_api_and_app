@@ -1,0 +1,6 @@
+CREATE TABLE IF NOT EXISTS user_passwords(
+    user_id INT PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,
+    password VARCHAR(255) NOT NULL,
+    last_changed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    is_compromised BOOLEAN DEFAULT FALSE, 
+);

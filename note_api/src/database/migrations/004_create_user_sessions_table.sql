@@ -5,6 +5,7 @@ CREATE TABLE IF NOT EXISTS user_sessions(
     refresh_token TEXT NOT NULL UNIQUE,
     ip_address VARCHAR(45),
     location VARCHAR(255),
+    device_info TEXT,
     user_agent TEXT,
     is_revoked BOOLEAN DEFAULT FALSE,
     expires_at TIMESTAMP NOT NULL,
