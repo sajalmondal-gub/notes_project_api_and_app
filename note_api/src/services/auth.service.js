@@ -8,6 +8,8 @@ import config from "../config/env.js";
 import { sendResetMail } from "../utils/mailer.js";
 
 class AuthService {
+
+  
   async createUserSession(userId, reqDetails) {
     const { ipAddress, location, userAgent } = reqDetails;
     const rawRefreshToken = crypto.randomBytes(40).toString("hex");
