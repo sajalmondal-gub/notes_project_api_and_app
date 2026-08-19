@@ -7,7 +7,7 @@ class Request {
     req.query = parsedUrl.query;
     req.params = {};
     req.get = (headerName) =>
-      req.headres[headerName.toLowerCase()] ?? undefined;
+      req.headers[headerName.toLowerCase()] ?? undefined;
     req.protocol = req.socket.encrypted ? "https" : "http";
     req.hostname = req.headers.host?.split(":")[0];
     req.ip = req.socket.remoteAddress;

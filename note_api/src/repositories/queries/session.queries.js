@@ -1,5 +1,5 @@
 export const INSERT_SESSION = `
-INSERT INTO user_sessions (user_id,refresh_token,ip_address,location,device_info,user_agent,expires_at) values($1, $2, $3, $4, $5,$6, $7,)
+INSERT INTO user_sessions (user_id,refresh_token,ip_address,location,device_info,user_agent,expires_at) values($1, $2, $3, $4, $5,$6, $7)
 RETURNING id, user_id, device_info, logged_at;
 `;
 export const FIND_ACTIVE_SESSION = `

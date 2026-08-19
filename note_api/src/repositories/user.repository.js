@@ -20,8 +20,10 @@ class UserRepository {
   // 2. Create Local User (Transaction)
   async createLocalUser({
     email,
+    passwordHash,
     firstName,
     lastName = null,
+    phoneNumber = null,
     profileImage = null,
   }) {
     const client = await db.pool.connect();
@@ -41,7 +43,7 @@ class UserRepository {
         firstName,
         lastName,
         phoneNumber,
-        null,
+        profileImage,
         null,
       ]);
       await client.query("COMMIT");

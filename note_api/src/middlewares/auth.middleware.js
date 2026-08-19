@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 import AppError from "../utils/app-error.js";
-
+import config from "../config/env.js";
 const parseCookies = (cookieHeader) => {
   const list = {};
   if (!cookieHeader) return list;
@@ -11,15 +11,18 @@ const parseCookies = (cookieHeader) => {
   return list;
 };
 
-export const protect =async (req, res, next) => {
+export const protect = async (req, res, next) => {
   try {
     let token;
-    
+
     // ১. Authorization Header check
-    if (req.headers.authorization && req.headers.authorization.startsWith("Bearer")) {
+    if (
+      req.headers.authorization &&
+      req.headers.authorization.startsWith("Bearer")
+    ) {
       token = req.headers.authorization.split(" ")[1];
-    } 
-    // ২. HTTP-Only Cookie check 
+    }
+    // ২. HTTP-Only Cookie check
     else {
       const cookies = parseCookies(req.headers.cookie);
       if (cookies.accessToken) token = cookies.accessToken;
@@ -29,11 +32,11 @@ export const protect =async (req, res, next) => {
       throw new AppError("Authentication required. Please log in.", 401);
     }
 
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    
+    const decoded = jwt.verify(token, config.JWT_ACCESS_SECRET);
+
     req.user = { id: decoded.id };
-    await next(); 
+    await next();
   } catch (error) {
-    throw error; 
+    throw error;
   }
 };

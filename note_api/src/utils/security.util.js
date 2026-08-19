@@ -3,7 +3,7 @@ import crypto from "crypto";
 import jwt from "jsonwebtoken";
 import config from "../config/env.js";
 // 1. Password Hashing
-export const hashPassword = async (password) => await bcrypt.hash(password, 20);
+export const hashPassword = async (password) => await bcrypt.hash(password, 10);
 
 export const comparePassword = async (plain, hashed) =>
   await bcrypt.compare(plain, hashed);
@@ -23,8 +23,8 @@ export const hashToken = (token) => {
 export const generateTokens = (user) => {
   const accessToken = jwt.sign(
     { id: user.id, role: user.role },
-    config.JWT_ACCESS_SECRET,
-    { expiresIn: "15m" },
+    config.JWT_SECRET,
+    { expiresIn: config.JWT_EXPIRES_IN },
   );
   const refreshToken = jwt.sign({ id: user.id }, config.JWT_REFRESH_SECRET, {
     expiresIn: "30d",
