@@ -18,7 +18,12 @@ class UserRepository {
     return new UsersModel(result.rows[0]);
   }
   // 2. Create Local User (Transaction)
-  async createLocalUser() {
+  async createLocalUser({
+    email,
+    firstName,
+    lastName = null,
+    profileImage = null,
+  }) {
     const client = await db.pool.connect();
     try {
       await client.query("BEGIN");
@@ -37,7 +42,7 @@ class UserRepository {
         lastName,
         phoneNumber,
         null,
-        address,
+        null,
       ]);
       await client.query("COMMIT");
       return await this.findByEmail(email);

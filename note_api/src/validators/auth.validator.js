@@ -3,8 +3,10 @@ import ValidatorEngine from "./validator.engine.js";
 class AuthValidator {
   static validateRegister(body) {
     const rules = {
-      name: "required|min:3|max:30",
+      first_name: "required|min:3|max:30",
+      last_name: "required|min:3|max:30",
       email: "required|email|max:150",
+      phone:"required|max:14",
       password: "required|min:6|max:100",
       confirm_password: "required",
     };

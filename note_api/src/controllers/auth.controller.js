@@ -12,18 +12,11 @@ class AuthController {
     const validatedData = authValidator.validateRegister(req.body);
     const reqDetails = await getRequestDetails(req);
 
-    const { user, accessToken, refreshToken } = await authService.registerUser(
-      validatedData,
-      reqDetails,
-    );
-
-    setAuthCookies(res, accessToken, refreshToken);
+    const result = await authService.registerLocal(validatedData, reqDetails);
     res.sendJSON(201, {
       success: true,
       message: "Registration successful.",
-      user,
-      accessToken,
-      refreshToken,
+      data: result,
     });
   };
 
