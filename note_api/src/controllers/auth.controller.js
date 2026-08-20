@@ -30,6 +30,20 @@ class AuthController {
       data: result,
     });
   };
+
+  // login
+
+  login = async (req, res) => {
+    const validatedData = authValidator.validateLogin(req.body);
+    const reqDetails = await getRequestDetails(req);
+    const result = await authService.loginLocal(validatedData, reqDetails);
+    // setAuthCookies(res, result.accessToken, result.refreshToken);
+    res.sendJSON(200, {
+      success: true,
+      message: "Login successful.",
+      data: result,
+    });
+  };
 }
 
 export default new AuthController();

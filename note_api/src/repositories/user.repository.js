@@ -2,6 +2,7 @@ import Users from "../models/user.model.js";
 import db from "../config/database.js";
 import {
   FIND_USER_BY_EMAIL,
+  GET_PASSWORD_HASH,
   INSERT_USER,
   INSERT_USER_PASSWORD,
   INSERT_USER_PROFILE,
@@ -54,6 +55,14 @@ class UserRepository {
     } finally {
       client.release();
     }
+  }
+
+  // 3. get haspassword
+
+  async getHashPassword(userId) {
+    const result = await db.query(GET_PASSWORD_HASH, [userId]);
+    if (result.rows.length === 0) return null;
+    return result.rows[0].password;
   }
 
   async linkSocialAccount(userId, provider, providerId) {

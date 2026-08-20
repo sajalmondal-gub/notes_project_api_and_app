@@ -17,6 +17,7 @@ class AuthValidator {
     }
     return result.data;
   }
+
   static validateLogin(body) {
     const rules = {
       email: "required|email",
@@ -28,6 +29,8 @@ class AuthValidator {
     }
     return result.data;
   }
+
+  
 
   static validateForgotPassword(body) {
     const rules = {
