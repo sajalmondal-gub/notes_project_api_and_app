@@ -7,6 +7,7 @@ import {
   REVOKE_ALL_USER_SESSIONS,
   GET_USER_ACTIVE_DEVICES,
   UPDATE_SESSION_TOKEN_BY_ID,
+  FIND_SESSION_BY_ID,
 } from "./queries/session.queries.js";
 class SessionRepository {
   async createSession({
