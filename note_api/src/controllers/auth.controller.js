@@ -44,6 +44,19 @@ class AuthController {
       data: result,
     });
   };
+
+  forgotPassword = async (req, res) => {
+    const validatedData = authValidator.validateForgotPassword(req.body);
+    await authService.forgotPassword(
+      validatedData.email,
+      validatedData.client_type,
+    );
+    res.sendJSON(200, {
+      success: true,
+      message:
+        "If your email is registered, you will receive a reset link shortly.",
+    });
+  };
 }
 
 export default new AuthController();

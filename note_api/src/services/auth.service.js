@@ -1,8 +1,5 @@
-import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
 import crypto from "crypto";
 import userRepository from "../repositories/user.repository.js";
-import UserModel from "../models/user.model.js";
 import AppError from "../utils/app-error.js";
 import config from "../config/env.js";
 import { sendResetMail } from "../utils/mailer.js";
@@ -10,8 +7,10 @@ import {
   comparePassword,
   generateTokens,
   hashPassword,
+  hashToken,
 } from "../utils/security.util.js";
 import sessionRepository from "../repositories/session.repository.js";
+import tokenRepository from "../repositories/token.repository.js";
 
 class AuthService {
   async registerLocal(data, deviceData) {
@@ -56,6 +55,45 @@ class AuthService {
       userAgent: deviceData.userAgent,
     });
     return { user, accessToken, refreshToken, sessionId: session.id };
+  }
+
+  async forgotPassword(email, clientType = "web") {
+    const user = await userRepository.findByEmail(email);
+    if (!user) return true;
+    const resetToken = crypto.randomBytes(32).toString("hex");
+    const hashedToken = hashToken(resetToken);
+    await tokenRepository.deleteUserTokensByType(user.id, "PASSWORD_RESET");
+    await tokenRepository.createToken(
+      user.id,
+      hashedToken,
+      "PASSWORD_RESET",
+      15,
+    );
+    const resetUrl =
+      clientType === "app"
+        ? `${config.APP_URL}reset-password?token=${resetToken}`
+        : `${config.CLIENT_URL}/reset-password?token=${resetToken}`;
+
+    await sendResetMail(user.email, resetUrl);
+    return true;
+  }
+
+  async resetPassword(token, newPassword) {
+    const hashedToken = hashToken(token);
+    const validToken = await tokenRepository.findValidToken(
+      hashedToken,
+      "PASSWORD_RESET",
+    );
+    if (!validToken)
+      throw new AppError(
+        "Password reset token is invalid or has expired.",
+        400,
+      );
+    const newPasswordHash = await hashPassword(newPassword);
+
+    await userRepository.updatePassword(validToken.user_id, newPasswordHash);
+    await tokenRepository.deleteTokenById(validToken.id);
+    await sessionRepository.revokeAllUserSessions(validToken.user_id);
   }
 }
 

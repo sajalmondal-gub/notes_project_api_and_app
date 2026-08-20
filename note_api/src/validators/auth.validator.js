@@ -6,7 +6,7 @@ class AuthValidator {
       first_name: "required|min:3|max:30",
       last_name: "required|min:3|max:30",
       email: "required|email|max:150",
-      phone:"required|max:14",
+      phone: "required|max:14",
       password: "required|min:6|max:100",
       confirm_password: "required",
     };
@@ -30,14 +30,12 @@ class AuthValidator {
     return result.data;
   }
 
-  
-
   static validateForgotPassword(body) {
     const rules = {
       email: "required|email",
+      client_type: "max:20",
     };
     const result = ValidatorEngine.validate(body, rules);
-    console.log(result);
     if (!result.isValid) {
       throw new AppError("Validation Faild", 400, result.errors);
     }
