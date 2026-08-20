@@ -41,5 +41,17 @@ class AuthValidator {
     }
     return result.data;
   }
+  static validateResetPassword(body) {
+    const rules = {
+      token: "required",
+      new_password: "required|min:6|max:100",
+      confirm_password: "required",
+    };
+    const result = ValidatorEngine.validate(body, rules);
+    if (!result.isValid) {
+      throw new AppError("Validation Faild", 400, result.errors);
+    }
+    return result.data;
+  }
 }
 export default AuthValidator;

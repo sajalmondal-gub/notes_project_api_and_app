@@ -57,6 +57,30 @@ class AuthController {
         "If your email is registered, you will receive a reset link shortly.",
     });
   };
+
+  resetPassword = async (req, res) => {
+    const validatedData = authValidator.validateResetPassword(req.body);
+    await authService.resetPassword(
+      validatedData.token,
+      validatedData.new_password,
+    );
+    res.sendJSON(200, {
+      success: true,
+      message:
+        "Password updated successfully. You have been logged out of all other devices. Please login with your new password.",
+    });
+  };
+
+  refreshToken = async (req, res) => {
+    const { refresh_token } = req.body;
+    if (!refresh_token) throw new AppError("Refresh token is required", 400);
+    const result = await authService.refreshAccessToken(refresh_token);
+    res.sendJSON(200, {
+      success: true,
+      message: "Token refreshed successfully",
+      data: result,
+    });
+  };
 }
 
 export default new AuthController();

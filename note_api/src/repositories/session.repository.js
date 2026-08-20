@@ -6,6 +6,7 @@ import {
   REVOKE_SINGLE_SESSION,
   REVOKE_ALL_USER_SESSIONS,
   GET_USER_ACTIVE_DEVICES,
+  UPDATE_SESSION_TOKEN_BY_ID,
 } from "./queries/session.queries.js";
 class SessionRepository {
   async createSession({
@@ -53,6 +54,14 @@ class SessionRepository {
   async getActiveDevices(userId) {
     const result = await db.query(GET_USER_ACTIVE_DEVICES, [userId]);
     return result.rows.map((row) => new SessionModel(row));
+  }
+
+  async updateSession(sessionId, refreshToken) {
+    await db.query(UPDATE_SESSION_TOKEN_BY_ID, [refreshToken, sessionId]);
+  }
+  async getSessionById(sessionId) {
+    const result = await db.query(FIND_SESSION_BY_ID, [sessionId]);
+    return new SessionModel(result.rows[0]);
   }
 }
 export default new SessionRepository();

@@ -20,14 +20,34 @@ export const hashToken = (token) => {
 };
 
 // 4. Generate JWT
-export const generateTokens = (user) => {
+export const generateTokens = (user, sessionId) => {
   const accessToken = jwt.sign(
-    { id: user.id, role: user.role },
+    { id: user.id, role: user.role, sessionId: sessionId },
     config.JWT_SECRET,
     { expiresIn: config.JWT_EXPIRES_IN },
   );
-  const refreshToken = jwt.sign({ id: user.id }, config.JWT_REFRESH_SECRET, {
-    expiresIn: "30d",
-  });
+  const refreshToken = jwt.sign(
+    { id: user.id, sessionId: sessionId },
+    config.JWT_REFRESH_SECRET,
+    {
+      expiresIn: "30d",
+    },
+  );
   return { accessToken, refreshToken };
+};
+
+export const verifyAccessToken = (token) => {
+  try {
+    return jwt.verify(token, config.JWT_SECRET);
+  } catch (error) {
+    throw new Error("Invalid or expired access token");
+  }
+};
+
+export const verifyRefreshToken = (token) => {
+  try {
+    return jwt.verify(token, config.JWT_REFRESH_SECRET);
+  } catch (error) {
+    throw new Error("Invalid or expired refresh token");
+  }
 };

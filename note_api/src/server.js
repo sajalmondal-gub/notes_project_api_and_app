@@ -16,7 +16,7 @@ const server = createServer(async (req, res) => {
         JSON.stringify({
           success: false,
           error: "InternalServerError",
-        })
+        }),
       );
     }
   }
@@ -26,7 +26,7 @@ server.on("error", (err) => {
   console.error("[SERVER ERROR]", err);
 });
 
-server.listen(config.PORT,'0.0.0.0', () => {
+server.listen(config.PORT, "0.0.0.0", () => {
   console.log("==================================================");
   console.log(`🚀 Server running on port ${config.PORT}`);
   console.log(`🌍 Environment: ${config.NODE_ENV}`);

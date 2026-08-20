@@ -6,6 +6,7 @@ import {
   INSERT_USER,
   INSERT_USER_PASSWORD,
   INSERT_USER_PROFILE,
+  UPSERT_PASSWORD,
 } from "./queries/user.queries.js";
 import UsersModel from "../models/user.model.js";
 class UserRepository {
@@ -68,6 +69,10 @@ class UserRepository {
   async linkSocialAccount(userId, provider, providerId) {
     await db.query(INSERT_SOCIAL_IDENTITY, [userId, provider, providerId]);
     return true;
+  }
+
+  async updatePassword(userId, passwordHash) {
+    await db.query(UPSERT_PASSWORD, [userId, passwordHash]);
   }
 }
 

@@ -8,6 +8,7 @@ import {
   generateTokens,
   hashPassword,
   hashToken,
+  verifyRefreshToken,
 } from "../utils/security.util.js";
 import sessionRepository from "../repositories/session.repository.js";
 import tokenRepository from "../repositories/token.repository.js";
@@ -22,17 +23,19 @@ class AuthService {
       lastName: data.lastName,
       phoneNumber: data.phoneNumber,
     });
-
-    const { accessToken, refreshToken } = generateTokens(user);
-
     const session = await sessionRepository.createSession({
       userId: user.id,
-      refreshToken,
+      refreshToken: "pending",
       ipAddress: deviceData.ipAddress,
       location: deviceData.location,
       deviceInfo: deviceData.deviceInfo,
       userAgent: deviceData.userAgent,
     });
+
+    const { accessToken, refreshToken } = generateTokens(user, session.id);
+
+    await sessionRepository.updateSession(session.id, refreshToken);
+
     return { user, accessToken, refreshToken, sessionId: session.id };
   }
 
@@ -42,18 +45,22 @@ class AuthService {
     const dbPasswordHash = await userRepository.getHashPassword(user.id);
     if (!dbPasswordHash)
       throw new AppError("Please login using your Social Account", 400);
-    const isMatch = comparePassword(data.password, dbPasswordHash);
+    const isMatch = await comparePassword(data.password, dbPasswordHash);
     if (!isMatch) throw new AppError("Invalid email or password", 401);
 
-    const { accessToken, refreshToken } = generateTokens(user);
     const session = await sessionRepository.createSession({
       userId: user.id,
-      refreshToken,
+      refreshToken: "pending",
       ipAddress: deviceData.ipAddress,
       location: deviceData.location,
       deviceInfo: deviceData.deviceInfo,
       userAgent: deviceData.userAgent,
     });
+
+    const { accessToken, refreshToken } = generateTokens(user, session.id);
+
+    await sessionRepository.updateSession(session.id, refreshToken);
+
     return { user, accessToken, refreshToken, sessionId: session.id };
   }
 
@@ -91,9 +98,34 @@ class AuthService {
       );
     const newPasswordHash = await hashPassword(newPassword);
 
-    await userRepository.updatePassword(validToken.user_id, newPasswordHash);
+    await userRepository.updatePassword(validToken.userId, newPasswordHash);
     await tokenRepository.deleteTokenById(validToken.id);
-    await sessionRepository.revokeAllUserSessions(validToken.user_id);
+    await sessionRepository.revokeAllUserSessions(validToken.userId);
+    return true;
+  }
+
+  async refreshAccessToken(incomingRefreshToken) {
+    const decoded = verifyRefreshToken(incomingRefreshToken);
+    const session = await sessionRepository.getSessionById(decoded.sessionId);
+    if (
+      !session ||
+      session.isRevoked ||
+      session.refreshToken !== incomingRefreshToken
+    ) {
+      throw new AppError(
+        "Session expired or invalid. Please login again.",
+        401,
+      );
+    }
+    const user = await userRepository.findByEmail(decoded.email); // Ba findById
+    if (!user) throw new AppError("User not found", 404);
+
+    const { accessToken, refreshToken: newRefreshToken } = generateTokens(
+      user,
+      session.id,
+    );
+    await sessionRepository.updateSession(session.id, newRefreshToken);
+    return { accessToken, refreshToken: newRefreshToken };
   }
 }
 
