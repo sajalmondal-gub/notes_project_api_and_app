@@ -3,7 +3,7 @@ import bodyParser from "./core/bodyParser.js";
 import Logger from "./middlewares/logger.middleware.js";
 import cors from "./middlewares/cors.middleware.js";
 import apiRouter from "./routes/index.js";
-import notFoundMiddleware from "./middlewares/notfound.middleware.js";
+import notFoundMiddleware from "./middlewares/notFound.middleware.js";
 import errorMiddleware from "./middlewares/error.middleware.js";
 
 const app = new Application();
