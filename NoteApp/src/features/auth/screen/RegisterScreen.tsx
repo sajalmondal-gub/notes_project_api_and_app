@@ -16,17 +16,21 @@ interface Props {
 export const RegisterScreen: React.FC<Props> = ({ navigation }) => {
     const { colors, typography, radius, isDark } = useTheme();
     const { register, authLoading, authError } = useAuth();
-    const [full_name, setFullName] = useState<string>('');
+    const [first_name, setFirstName] = useState<string>('');
+    const [last_name, setLastName] = useState<string>('');
     const [email, setEmail] = useState<string>('');
     const [password, setPassword] = useState<string>('');
     const [confirm_password, setCofirmPassword] = useState<string>('');
     const [checked, setChecked] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(false);
-    const [validationErrors, setValidationErrors] = useState<{ full_name?: string, email?: string, password?: string, confirm_password?: string, checked?: string }>({});
+    const [showPassword, setShowPassword] = useState<boolean>(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState<boolean>(false);
+    const [validationErrors, setValidationErrors] = useState<{ first_name?: string, last_name?: string, email?: string, password?: string, confirm_password?: string, checked?: string }>({});
 
     const hadnleSignUpWorkFlow = async () => {
-        const errors: { full_name?: string, email?: string, password?: string, confirm_password?: string } = {}
-        if (!full_name) errors.full_name = 'Name is required';
+        const errors: { first_name?: string, last_name?: string, email?: string, password?: string, confirm_password?: string, checked?: string } = {}
+        if (!first_name) errors.first_name = 'First Name is required';
+        if (!last_name) errors.last_name = 'Last Name is required';
         if (!email) {
             errors.email = 'Email is required';
         } else {
@@ -41,11 +45,14 @@ export const RegisterScreen: React.FC<Props> = ({ navigation }) => {
         } else if (password && password !== confirm_password) {
             errors.confirm_password = 'Passwords do not match';
         }
+        if (!checked) {
+            errors.checked = 'You must agree to the Terms of Service and Privacy Policy';
+        }
         setValidationErrors(errors);
 
         if (Object.keys(errors).length > 0) return;
         try {
-            await register({ full_name, email, password, confirm_password });
+            await register({ first_name, last_name, email, password, confirm_password });
         } catch (error: any) {
             console.log('Registeration failed : ', error.message);
         }
@@ -74,29 +81,57 @@ export const RegisterScreen: React.FC<Props> = ({ navigation }) => {
                         </View>
 
                         <View className="w-full mt-10">
-                            <View className="mb-5">
-                                <Text style={{ color: colors.text.secondary, fontSize: typography.fontSizes.sm, fontWeight: typography.fontWeights.medium, paddingBottom: 5 }}>Full Name *</Text>
-                                <TextInput
-                                    placeholder="e.g.Jone Doe"
-                                    placeholderTextColor={colors.text.disabled}
-                                    value={full_name}
-                                    autoCapitalize="none"
-                                    style={{
-                                        backgroundColor: colors.background.secondary,
-                                        color: colors.text.primary,
-                                        borderRadius: radius.lg,
-                                        paddingHorizontal: 16,
-                                        paddingVertical: 14,
-                                        borderWidth: 1,
-                                        borderColor: validationErrors.full_name ? 'red' : (colors.border.default || 'transparent')
-                                    }}
-                                    onChangeText={(text) => {
-                                        setFullName(text);
-                                        setValidationErrors((prev) => ({ ...prev, full_name: undefined }));
-                                    }}
+                            <View className="flex-row gap-x-4 w-full">
+                                <View className="mb-5 flex-1">
+                                    <Text style={{ color: colors.text.secondary, fontSize: typography.fontSizes.sm, fontWeight: typography.fontWeights.medium, paddingBottom: 5 }}>Full Name *</Text>
+                                    <TextInput
+                                        placeholder="e.g.Jone"
+                                        placeholderTextColor={colors.text.disabled}
+                                        value={first_name}
+                                        autoCapitalize="none"
+                                        style={{
+                                            width: '100%',
+                                            backgroundColor: colors.background.secondary,
+                                            color: colors.text.primary,
+                                            borderRadius: radius.lg,
+                                            paddingHorizontal: 16,
+                                            paddingVertical: 14,
+                                            borderWidth: 1,
+                                            borderColor: validationErrors.first_name ? 'red' : (colors.border.default || 'transparent')
+                                        }}
+                                        onChangeText={(text) => {
+                                            setFirstName(text);
+                                            setValidationErrors((prev) => ({ ...prev, first_name: undefined }));
+                                        }}
 
-                                />
-                                {validationErrors.full_name && <Text style={{ color: 'red', fontSize: typography.fontSizes.xs, marginTop: 4, marginLeft: 4 }}>{validationErrors.full_name}</Text>}
+                                    />
+                                    {validationErrors.first_name && <Text style={{ color: 'red', fontSize: typography.fontSizes.xs, marginTop: 4, marginLeft: 4 }}>{validationErrors.first_name}</Text>}
+                                </View>
+                                <View className="mb-5 flex-1">
+                                    <Text style={{ color: colors.text.secondary, fontSize: typography.fontSizes.sm, fontWeight: typography.fontWeights.medium, paddingBottom: 5 }}>Last Name *</Text>
+                                    <TextInput
+                                        placeholder="e.g.Doe"
+                                        placeholderTextColor={colors.text.disabled}
+                                        value={last_name}
+                                        autoCapitalize="none"
+                                        style={{
+                                            width: '100%',
+                                            backgroundColor: colors.background.secondary,
+                                            color: colors.text.primary,
+                                            borderRadius: radius.lg,
+                                            paddingHorizontal: 16,
+                                            paddingVertical: 14,
+                                            borderWidth: 1,
+                                            borderColor: validationErrors.last_name ? 'red' : (colors.border.default || 'transparent')
+                                        }}
+                                        onChangeText={(text) => {
+                                            setLastName(text);
+                                            setValidationErrors((prev) => ({ ...prev, last_name: undefined }));
+                                        }}
+
+                                    />
+                                    {validationErrors.first_name && <Text style={{ color: 'red', fontSize: typography.fontSizes.xs, marginTop: 4, marginLeft: 4 }}>{validationErrors.last_name}</Text>}
+                                </View>
                             </View>
                             <View className="mb-5">
                                 <Text style={{ color: colors.text.secondary, fontSize: typography.fontSizes.sm, fontWeight: typography.fontWeights.medium, paddingBottom: 5 }}>Email *</Text>
@@ -107,6 +142,7 @@ export const RegisterScreen: React.FC<Props> = ({ navigation }) => {
                                     autoCapitalize="none"
                                     keyboardType="email-address"
                                     style={{
+
                                         backgroundColor: colors.background.secondary,
                                         color: colors.text.disabled,
                                         borderRadius: radius.lg,
@@ -124,59 +160,85 @@ export const RegisterScreen: React.FC<Props> = ({ navigation }) => {
                             </View>
                             <View className="mb-5">
                                 <Text style={{ color: colors.text.secondary, fontSize: typography.fontSizes.sm, fontWeight: typography.fontWeights.medium, paddingBottom: 5 }}>Password *</Text>
-                                <TextInput
-                                    placeholder="*******"
-                                    placeholderTextColor={colors.text.secondary}
-                                    value={password}
-                                    secureTextEntry
-                                    style={{
-                                        backgroundColor: colors.background.secondary,
-                                        color: colors.text.disabled,
-                                        borderRadius: radius.lg,
-                                        paddingHorizontal: 16,
-                                        paddingVertical: 14,
-                                        borderWidth: 1,
-                                        borderColor: validationErrors.password ? 'red' : (colors.border.default || 'transparent')
-                                    }}
-                                    onChangeText={(text) => {
-                                        setPassword(text);
-                                        setValidationErrors(prev => ({ ...prev, password: undefined }));
-                                    }}
-                                />
+                                <View style={{ position: 'relative', justifyContent: 'center' }}>
+                                    <TextInput
+                                        placeholder="*******"
+                                        placeholderTextColor={colors.text.secondary}
+                                        value={password}
+                                        secureTextEntry={!showPassword}
+                                        style={{
+                                            backgroundColor: colors.background.secondary,
+                                            color: colors.text.disabled,
+                                            borderRadius: radius.lg,
+                                            paddingHorizontal: 16,
+                                            paddingRight: 45,
+                                            paddingVertical: 14,
+                                            borderWidth: 1,
+                                            borderColor: validationErrors.password ? 'red' : (colors.border.default || 'transparent')
+                                        }}
+                                        onChangeText={(text) => {
+                                            setPassword(text);
+                                            setValidationErrors(prev => ({ ...prev, password: undefined }));
+                                        }}
+                                    />
+                                    <TouchableOpacity
+                                        style={{ position: 'absolute', right: 14, height: '100%', justifyContent: 'center' }}
+                                        onPress={() => setShowPassword(!showPassword)}
+                                    >
+                                        <Icon name={showPassword ? "eye-outline" : "eye-off-outline"} size={20} color={colors.text.secondary} />
+                                    </TouchableOpacity>
+                                </View>
                                 {validationErrors.password && <Text style={{ color: 'red', fontSize: typography.fontSizes.sm, fontWeight: typography.fontWeights.medium }}>{validationErrors.password} </Text>}
                             </View>
                             <View className="mb-5">
                                 <Text style={{ color: colors.text.secondary, fontSize: typography.fontSizes.sm, fontWeight: typography.fontWeights.medium, paddingBottom: 5 }}>Confirm Password *</Text>
-                                <TextInput
-                                    placeholder="*******"
-                                    placeholderTextColor={colors.text.secondary}
-                                    value={confirm_password}
-                                    secureTextEntry
-                                    onChangeText={(text) => {
-                                        setCofirmPassword(text);
-                                        setValidationErrors(prev => ({ ...prev, confirm_password: undefined }));
-                                    }}
+                                <View style={{ position: 'relative', justifyContent: 'center' }}>
+                                    <TextInput
+                                        placeholder="*******"
+                                        placeholderTextColor={colors.text.secondary}
+                                        value={confirm_password}
+                                        secureTextEntry={!showConfirmPassword}
+                                        onChangeText={(text) => {
+                                            setCofirmPassword(text);
+                                            setValidationErrors(prev => ({ ...prev, confirm_password: undefined }));
+                                        }}
 
-                                    style={{
-                                        backgroundColor: colors.background.secondary,
-                                        color: colors.text.disabled,
-                                        borderRadius: radius.lg,
-                                        paddingHorizontal: 16,
-                                        paddingVertical: 14,
-                                        borderWidth: 1,
-                                        borderColor: validationErrors.confirm_password ? 'red' : (colors.border.default || 'transparent')
-                                    }}
-                                />
+                                        style={{
+                                            backgroundColor: colors.background.secondary,
+                                            color: colors.text.disabled,
+                                            borderRadius: radius.lg,
+                                            paddingHorizontal: 16,
+                                            paddingVertical: 14,
+                                            paddingRight: 45,
+                                            borderWidth: 1,
+                                            borderColor: validationErrors.confirm_password ? 'red' : (colors.border.default || 'transparent')
+                                        }}
+                                    />
+                                    <TouchableOpacity
+                                        style={{ position: 'absolute', right: 14, height: '100%', justifyContent: 'center' }}
+                                        onPress={() => setShowConfirmPassword(!showConfirmPassword)}
+                                    >
+                                        <Icon name={showConfirmPassword ? "eye-outline" : "eye-off-outline"} size={20} color={colors.text.secondary} />
+                                    </TouchableOpacity>
+
+                                </View>
                                 {validationErrors.confirm_password && <Text style={{ color: 'red', fontSize: typography.fontSizes.sm, fontWeight: typography.fontWeights.medium }}>{validationErrors.confirm_password} </Text>}
                             </View>
                             <View className="mb-5">
-                                <Checkbox label="I agree to The Terms Of Service and Privacy Policy" isChecked={checked} onPress={() => setChecked(!checked)} error={validationErrors.checked} />
+                                <Checkbox label="I agree to The Terms Of Service and Privacy Policy" isChecked={checked} onPress={() => {
+                                    setChecked(!checked);
+                                    setValidationErrors(prev => ({ ...prev, checked: undefined }));
+                                }}
+                                    error={validationErrors.checked}
+                                />
                             </View>
 
                             <TouchableOpacity
-                                disabled={loading}
+                                onPress={hadnleSignUpWorkFlow}
+                                disabled={loading || authLoading}
+
                                 style={{
-                                    backgroundColor: loading ? colors.border.default : colors.text.brand,
+                                    backgroundColor: (loading || authLoading) ? colors.border.default : colors.text.brand,
                                     paddingVertical: 16,
                                     borderRadius: radius.lg,
                                     alignItems: "center",

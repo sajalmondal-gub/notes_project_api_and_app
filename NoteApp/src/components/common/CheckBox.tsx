@@ -15,7 +15,8 @@ const Checkbox: React.FC<Propos> = ({ label, isChecked, onPress, error }) => {
     return (
         <View className="mb-2">
             <Pressable
-                className="flex-row items-center p-4 active:opacity-70"
+                className="flex-row items-center py-1 active:opacity-70"
+                
                 onPress={onPress}
             >
                 <View
